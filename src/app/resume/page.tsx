@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Section } from "@/components/section";
 
 export const metadata: Metadata = {
@@ -53,13 +52,14 @@ export default function ResumePage() {
         <p className="mt-4 max-w-3xl text-slate">
           Senior Data Engineer with 5+ years building enterprise-scale data platforms and real-time analytics systems.
         </p>
-        <Link
+        <a
           href="/resume.pdf"
           className="mt-6 inline-flex rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-slate-950"
           target="_blank"
+          rel="noreferrer"
         >
           Download Resume
-        </Link>
+        </a>
       </header>
 
       <Section title="Experience">
