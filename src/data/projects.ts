@@ -6,6 +6,19 @@ export type Project = {
   approach: string[];
   impact: string[];
   stack: string[];
+  diagram: string;
+  artifacts: {
+    githubRepo: string;
+    diagram: string;
+    liveDemo?: string;
+  };
+  genaiDetails?: {
+    modelProvider: string;
+    promptingApproach: string[];
+    guardrails: string[];
+    latencyCostTradeoffs: string[];
+    measuredOutcomes: string[];
+  };
 };
 
 export const projects: Project[] = [
@@ -26,7 +39,13 @@ export const projects: Project[] = [
       "Reduced time-to-insight by consolidating critical datasets into a governed platform.",
       "Improved reliability and observability for daily 10TB+ data movement."
     ],
-    stack: ["AWS S3", "AWS Glue", "Spark", "Redshift", "Python", "SQL", "Terraform"]
+    stack: ["AWS S3", "AWS Glue", "Spark", "Redshift", "Python", "SQL", "Terraform"],
+    diagram: "/diagrams/aws-lakehouse.svg",
+    artifacts: {
+      githubRepo: "https://github.com/saikrishnareddy595/Protfolio/tree/main#todo-lakehouse-repo",
+      diagram: "/diagrams/aws-lakehouse.svg",
+      liveDemo: "https://example.com/todo-lakehouse-demo"
+    }
   },
   {
     slug: "airflow-migration-legacy-etl-modernization",
@@ -45,7 +64,13 @@ export const projects: Project[] = [
       "Increased end-to-end throughput by 40% through optimized orchestration.",
       "Reduced operational burden by replacing manual interventions with automated retries and alerts."
     ],
-    stack: ["Apache Airflow", "Python", "SQL", "Docker", "GitLab CI", "Jenkins"]
+    stack: ["Apache Airflow", "Python", "SQL", "Docker", "GitLab CI", "Jenkins"],
+    diagram: "/diagrams/airflow-migration.svg",
+    artifacts: {
+      githubRepo: "https://github.com/saikrishnareddy595/Protfolio/tree/main#todo-airflow-repo",
+      diagram: "/diagrams/airflow-migration.svg",
+      liveDemo: "https://example.com/todo-airflow-demo"
+    }
   },
   {
     slug: "kafka-streaming-real-time-monitoring",
@@ -64,7 +89,13 @@ export const projects: Project[] = [
       "Improved anomaly detection response time with streaming-derived metrics.",
       "Reduced lag between source events and analytics consumption."
     ],
-    stack: ["Apache Kafka", "Spark Structured Streaming", "PySpark", "Delta Lake", "Databricks"]
+    stack: ["Apache Kafka", "Spark Structured Streaming", "PySpark", "Delta Lake", "Databricks"],
+    diagram: "/diagrams/kafka-streaming.svg",
+    artifacts: {
+      githubRepo: "https://github.com/saikrishnareddy595/Protfolio/tree/main#todo-kafka-repo",
+      diagram: "/diagrams/kafka-streaming.svg",
+      liveDemo: "https://example.com/todo-kafka-demo"
+    }
   },
   {
     slug: "llm-assisted-data-quality-anomaly-detection",
@@ -83,7 +114,36 @@ export const projects: Project[] = [
       "Improved incident triage speed with contextual anomaly summaries.",
       "Raised stakeholder confidence in downstream analytics outputs."
     ],
-    stack: ["Python", "SQL", "dbt", "Airflow", "LLMs", "AWS Lambda"]
+    stack: ["Python", "SQL", "dbt", "Airflow", "LLM provider", "AWS Lambda"],
+    diagram: "/diagrams/llm-data-quality.svg",
+    artifacts: {
+      githubRepo: "https://github.com/saikrishnareddy595/Protfolio/tree/main#todo-llm-repo",
+      diagram: "/diagrams/llm-data-quality.svg",
+      liveDemo: "https://example.com/todo-llm-demo"
+    },
+    genaiDetails: {
+      modelProvider: "LLM provider (anonymized enterprise endpoint)",
+      promptingApproach: [
+        "Used structured prompts with schema-constrained outputs for anomaly classification and severity tags.",
+        "Grounded prompts with sampled row stats, freshness metadata, and upstream dependency context.",
+        "Applied few-shot examples for common incident patterns to improve consistency."
+      ],
+      guardrails: [
+        "Masked sensitive fields and removed direct PII before prompt construction.",
+        "Enforced deterministic fallback rules when model confidence was low.",
+        "Kept human approval for production incident closure recommendations."
+      ],
+      latencyCostTradeoffs: [
+        "Used smaller models for high-frequency checks and escalated to larger models only for complex anomalies.",
+        "Cached repeated prompt contexts for recurring table patterns.",
+        "Batched low-priority checks to lower token usage during peak windows."
+      ],
+      measuredOutcomes: [
+        "Reduced noisy alert volume while preserving true-positive incident detection.",
+        "Improved on-call triage speed with concise root-cause summaries.",
+        "Lowered manual effort for recurring data-quality investigations."
+      ]
+    }
   }
 ];
 

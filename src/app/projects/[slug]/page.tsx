@@ -37,7 +37,26 @@ export default function ProjectDetailPage({ params }: PageProps) {
         <p className="text-xs uppercase tracking-[0.2em] text-accent">Case Study</p>
         <h1 className="mt-3 text-3xl font-semibold text-ink sm:text-4xl">{project.title}</h1>
         <p className="mt-4 max-w-3xl leading-7 text-slate">{project.summary}</p>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <a href={project.artifacts.githubRepo} target="_blank" rel="noreferrer" className="rounded-full bg-accent px-4 py-2 text-sm font-medium text-slate-950">
+            GitHub Repo
+          </a>
+          <a href={project.artifacts.diagram} target="_blank" rel="noreferrer" className="rounded-full border border-white/20 px-4 py-2 text-sm text-ink">
+            Diagram
+          </a>
+          {project.artifacts.liveDemo ? (
+            <a href={project.artifacts.liveDemo} target="_blank" rel="noreferrer" className="rounded-full border border-white/20 px-4 py-2 text-sm text-ink">
+              Live Demo
+            </a>
+          ) : null}
+        </div>
       </header>
+
+      <Section title="Architecture Diagram">
+        <div className="glass-card overflow-hidden p-4">
+          <img src={project.diagram} alt={`${project.title} architecture diagram`} className="h-auto w-full rounded-lg border border-white/10" />
+        </div>
+      </Section>
 
       <Section title="Challenge">
         <div className="glass-card p-6 text-slate">{project.challenge}</div>
@@ -78,6 +97,62 @@ export default function ProjectDetailPage({ params }: PageProps) {
           </ul>
         </div>
       </Section>
+
+      {project.genaiDetails ? (
+        <>
+          <Section title="Model/Provider">
+            <div className="glass-card p-6 text-slate">{project.genaiDetails.modelProvider}</div>
+          </Section>
+
+          <Section title="Prompting Approach">
+            <div className="glass-card p-6">
+              <ul className="space-y-3 text-slate">
+                {project.genaiDetails.promptingApproach.map((item) => (
+                  <li key={item} className="list-inside list-disc leading-7">
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Section>
+
+          <Section title="Guardrails">
+            <div className="glass-card p-6">
+              <ul className="space-y-3 text-slate">
+                {project.genaiDetails.guardrails.map((item) => (
+                  <li key={item} className="list-inside list-disc leading-7">
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Section>
+
+          <Section title="Latency/Cost Tradeoffs">
+            <div className="glass-card p-6">
+              <ul className="space-y-3 text-slate">
+                {project.genaiDetails.latencyCostTradeoffs.map((item) => (
+                  <li key={item} className="list-inside list-disc leading-7">
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Section>
+
+          <Section title="Measured Outcomes">
+            <div className="glass-card p-6">
+              <ul className="space-y-3 text-slate">
+                {project.genaiDetails.measuredOutcomes.map((item) => (
+                  <li key={item} className="list-inside list-disc leading-7">
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Section>
+        </>
+      ) : null}
     </article>
   );
 }

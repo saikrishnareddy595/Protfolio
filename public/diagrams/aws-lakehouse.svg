@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#071427"/>
+  <text x="80" y="90" fill="#b8c6e8" font-family="Arial" font-size="38">AWS Lakehouse Architecture (Placeholder)</text>
+  <rect x="80" y="160" width="300" height="120" rx="16" fill="#10233d" stroke="#4db2ff"/>
+  <text x="110" y="230" fill="#dce7ff" font-family="Arial" font-size="24">Sources</text>
+  <rect x="450" y="160" width="300" height="120" rx="16" fill="#10233d" stroke="#4db2ff"/>
+  <text x="490" y="230" fill="#dce7ff" font-family="Arial" font-size="24">S3 + Glue + Spark</text>
+  <rect x="820" y="160" width="300" height="120" rx="16" fill="#10233d" stroke="#4db2ff"/>
+  <text x="870" y="230" fill="#dce7ff" font-family="Arial" font-size="24">Redshift BI</text>
+  <line x1="380" y1="220" x2="450" y2="220" stroke="#7dd3fc" stroke-width="5"/>
+  <line x1="750" y1="220" x2="820" y2="220" stroke="#7dd3fc" stroke-width="5"/>
+</svg>

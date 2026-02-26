@@ -5,7 +5,10 @@ import { projects } from "@/data/projects";
 
 export const metadata: Metadata = {
   title: "Projects",
-  description: "Case studies across lakehouse, ETL modernization, streaming, and AI-assisted data quality."
+  description: "Data engineering case studies across lakehouse, ETL modernization, streaming, and AI-assisted data quality.",
+  openGraph: {
+    description: "Project deep dives covering architecture, implementation approach, and measurable outcomes."
+  }
 };
 
 export default function ProjectsPage() {

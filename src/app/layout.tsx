@@ -17,12 +17,14 @@ export const metadata: Metadata = {
     url: siteConfig.url,
     siteName: siteConfig.name,
     title: siteConfig.title,
-    description: siteConfig.description
+    description: siteConfig.description,
+    images: [siteConfig.ogImage]
   },
   twitter: {
     card: "summary_large_image",
     title: siteConfig.title,
-    description: siteConfig.description
+    description: siteConfig.description,
+    images: [siteConfig.ogImage]
   }
 };
 
