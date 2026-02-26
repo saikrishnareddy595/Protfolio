@@ -23,8 +23,8 @@ export function ProjectCard({ project }: ProjectCardProps) {
         <a href={project.artifacts.githubRepo} target="_blank" rel="noreferrer" className="rounded-full border border-white/15 px-3 py-1 text-slate hover:text-ink">
           GitHub Repo
         </a>
-        <a href={project.artifacts.diagram} target="_blank" rel="noreferrer" className="rounded-full border border-white/15 px-3 py-1 text-slate hover:text-ink">
-          Diagram
+        <a href={project.artifacts.architectureDiagram} target="_blank" rel="noreferrer" className="rounded-full border border-white/15 px-3 py-1 text-slate hover:text-ink">
+          Architecture Diagram
         </a>
         {project.artifacts.liveDemo ? (
           <a href={project.artifacts.liveDemo} target="_blank" rel="noreferrer" className="rounded-full border border-white/15 px-3 py-1 text-slate hover:text-ink">

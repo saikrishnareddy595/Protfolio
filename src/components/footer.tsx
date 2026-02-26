@@ -1,6 +1,6 @@
 import { siteConfig } from "@/lib/site";
 import { GitHubIcon, LinkedInIcon, MailIcon } from "@/components/social-icons";
-import { socials } from "@/lib/socials";
+import { socials } from "@/config/socials";
 
 export function Footer() {
   return (

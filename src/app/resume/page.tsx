@@ -5,7 +5,8 @@ export const metadata: Metadata = {
   title: "Resume",
   description: "Resume of Krishna Reddy, Senior Data Engineer with experience at Charter Communications, Wells Fargo, and McKesson.",
   openGraph: {
-    description: "Experience, skills, and education summary for Krishna Reddy."
+    description: "Experience, skills, and education summary for Krishna Reddy.",
+    images: ["/og.png"]
   }
 };
 

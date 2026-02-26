@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { GitHubIcon, LinkedInIcon, MailIcon } from "@/components/social-icons";
-import { socials } from "@/lib/socials";
+import { socials } from "@/config/socials";
 
 export const metadata: Metadata = {
   title: "Contact",
   description: "Connect with Krishna Reddy for Senior Data Engineer roles. Fast response and clear communication.",
   openGraph: {
-    description: "Reach out to Krishna Reddy for data platform engineering opportunities."
+    description: "Reach out to Krishna Reddy for data platform engineering opportunities.",
+    images: ["/og.png"]
   }
 };
 

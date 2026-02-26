@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { GitHubIcon } from "@/components/social-icons";
-import { socials } from "@/lib/socials";
+import { socials } from "@/config/socials";
 
 const navItems = [
   { href: "/", label: "Home" },
@@ -43,7 +43,7 @@ export function Navbar() {
             target="_blank"
             rel="noreferrer"
             aria-label="GitHub"
-            className="rounded-full border border-white/10 bg-white/5 p-2 text-slate transition hover:text-ink"
+            className="rounded-full border border-white/10 bg-white/5 p-2 text-slate transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           >
             <GitHubIcon className="h-4 w-4" />
           </a>

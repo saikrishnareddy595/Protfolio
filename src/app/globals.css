@@ -6,11 +6,27 @@
   color-scheme: dark;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
-  background: linear-gradient(160deg, #050a16 0%, #070f22 50%, #050b18 100%);
+  background: linear-gradient(160deg, #050a16 0%, #070f22 55%, #050b18 100%);
   color: #eaf2ff;
+  line-height: 1.5;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.12;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.12) 0.45px, transparent 0.45px);
+  background-size: 3px 3px;
+  z-index: -2;
 }
 
 main {
@@ -38,4 +54,12 @@ main {
 
 a {
   text-underline-offset: 4px;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #7dd3fc;
+  outline-offset: 2px;
 }

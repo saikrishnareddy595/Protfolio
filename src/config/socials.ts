@@ -3,5 +3,3 @@ export const socials = {
   GitHub: "https://github.com/saikrishnareddy595",
   Email: "mailto:reddamgufus21188@gmail.com"
 } as const;
-
-export const socialLabels = Object.keys(socials) as Array<keyof typeof socials>;

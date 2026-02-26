@@ -7,7 +7,8 @@ export const metadata: Metadata = {
   title: "Projects",
   description: "Data engineering case studies across lakehouse, ETL modernization, streaming, and AI-assisted data quality.",
   openGraph: {
-    description: "Project deep dives covering architecture, implementation approach, and measurable outcomes."
+    description: "Project deep dives covering architecture, implementation approach, and measurable outcomes.",
+    images: ["/og.png"]
   }
 };
 
