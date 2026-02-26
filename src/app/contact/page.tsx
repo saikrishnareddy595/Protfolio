@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -17,20 +16,20 @@ export default function ContactPage() {
           The fastest way to reach me is by email. I am open to Senior Data Engineer opportunities and consulting.
         </p>
         <div className="mt-7 flex flex-wrap gap-3">
-          <Link
+          <a
             href={`mailto:${siteConfig.email}`}
             className="rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-slate-950"
           >
             Email Me
-          </Link>
-          <Link
+          </a>
+          <a
             href={siteConfig.linkedIn}
             target="_blank"
             rel="noreferrer"
             className="rounded-full border border-white/20 px-5 py-2.5 text-sm text-ink"
           >
             LinkedIn
-          </Link>
+          </a>
         </div>
       </header>
 
