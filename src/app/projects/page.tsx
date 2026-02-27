@@ -1,25 +1,19 @@
 import type { Metadata } from "next";
-import { ProjectCard } from "@/components/project-card";
-import { Section } from "@/components/section";
-import { projects } from "@/data/projects";
+import { ProjectsExplorer } from "@/components/ProjectsExplorer";
+import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "Projects",
-  description: "Data engineering case studies across lakehouse, ETL modernization, streaming, and AI-assisted data quality.",
+  description: "Premium data engineering projects with architecture depth and measurable outcomes.",
+  alternates: {
+    canonical: "/projects"
+  },
   openGraph: {
-    description: "Project deep dives covering architecture, implementation approach, and measurable outcomes.",
-    images: ["/og.png"]
+    description: "Data engineering projects across lakehouse, streaming, orchestration, and AI-ready data platforms.",
+    images: [siteConfig.ogImage]
   }
 };
 
 export default function ProjectsPage() {
-  return (
-    <Section title="Project Case Studies" eyebrow="Portfolio">
-      <div className="grid gap-5 md:grid-cols-2">
-        {projects.map((project) => (
-          <ProjectCard key={project.slug} project={project} />
-        ))}
-      </div>
-    </Section>
-  );
+  return <ProjectsExplorer />;
 }

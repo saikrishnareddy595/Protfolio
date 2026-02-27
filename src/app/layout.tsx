@@ -1,16 +1,25 @@
 import type { Metadata } from "next";
+import { Inter, JetBrains_Mono, Sora } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-import { siteConfig } from "@/lib/site";
+import { AnimatedShell } from "@/components/animated-shell";
+import { siteConfig } from "@/config/site";
+
+const inter = Inter({ subsets: ["latin"], variable: "--font-body" });
+const sora = Sora({ subsets: ["latin"], variable: "--font-heading" });
+const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
     default: siteConfig.title,
-    template: `%s - ${siteConfig.name}`
+    template: `%s — Portfolio`
   },
   description: siteConfig.description,
+  alternates: {
+    canonical: "/"
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -30,13 +39,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body className="antialiased">
-        <div className="pointer-events-none absolute inset-0 -z-10 bg-haze" />
-        <div className="gradient-orb left-[-14rem] top-[-12rem] bg-sky-500" />
-        <div className="gradient-orb right-[-16rem] top-[-18rem] bg-fuchsia-400" />
+    <html lang="en" className={`${inter.variable} ${sora.variable} ${jetbrainsMono.variable}`}>
+      <body className="min-h-screen bg-zinc-950 font-body text-zinc-100 antialiased">
+        <div className="pointer-events-none fixed inset-0 -z-20 bg-[radial-gradient(ellipse_at_top,_rgba(56,189,248,0.12),_transparent_55%),radial-gradient(ellipse_at_80%_20%,_rgba(120,119,198,0.08),_transparent_45%),linear-gradient(180deg,_#09090b_0%,_#050508_100%)]" />
+        <div className="noise-overlay pointer-events-none fixed inset-0 -z-10" />
         <Navbar />
-        <main className="mx-auto max-w-6xl px-5 pb-16 pt-10 sm:px-8">{children}</main>
+        <main>
+          <AnimatedShell>{children}</AnimatedShell>
+        </main>
         <Footer />
       </body>
     </html>

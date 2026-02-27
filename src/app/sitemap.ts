@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
-import { projectSlugs } from "@/data/projects";
-import { siteConfig } from "@/lib/site";
+import { projectSlugs } from "@/config/projects";
+import { siteConfig } from "@/config/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const pages = ["", "/projects", "/resume", "/contact"];

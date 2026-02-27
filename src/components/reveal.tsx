@@ -6,14 +6,16 @@ import { ReactNode } from "react";
 type RevealProps = {
   children: ReactNode;
   delay?: number;
+  className?: string;
 };
 
-export function Reveal({ children, delay = 0 }: RevealProps) {
+export function Reveal({ children, delay = 0, className }: RevealProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 22 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.55, ease: "easeOut", delay }}
+      className={className}
+      initial={{ opacity: 0, y: 24, scale: 0.985 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay }}
     >
       {children}
     </motion.div>
