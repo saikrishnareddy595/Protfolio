@@ -17,14 +17,15 @@ type NavItem = {
 
 const homeNavItems: NavItem[] = [
   { label: "Home", href: "/", sectionId: "top" },
-  { label: "Projects Worked", href: "/#projects", sectionId: "projects" },
-  { label: "Skills Matrix", href: "/#skills", sectionId: "skills" },
-  { label: "Experience", href: "/#experience", sectionId: "experience" }
+  { label: "Projects", href: "/#projects", sectionId: "projects" },
+  { label: "Skills", href: "/#skills", sectionId: "skills" },
+  { label: "Experience", href: "/#experience", sectionId: "experience" },
+  { label: "Education", href: "/#education", sectionId: "education" },
 ];
 
 const defaultNavItems: NavItem[] = [
   { label: "Home", href: "/" },
-  { label: "Projects Worked", href: "/projects" },
+  { label: "Projects", href: "/projects" },
   { label: "Resume", href: "/resume" },
   { label: "Contact", href: "/contact" }
 ];
@@ -92,7 +93,7 @@ export function Navbar() {
       className="sticky top-0 z-50 border-b border-white/10 bg-zinc-950/70 backdrop-blur-xl"
     >
       <div className="mx-auto flex w-full max-w-[1200px] items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
-        <Link href="/" className="font-heading text-sm font-semibold tracking-[0.18em] text-zinc-100">
+        <Link href="/" className="font-heading text-sm font-semibold tracking-[0.18em] text-zinc-100 shrink-0">
           KRISHNA REDDY
         </Link>
 
@@ -114,7 +115,7 @@ export function Navbar() {
           })}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           {socials.LinkedIn ? <IconLink href={socials.LinkedIn} label="LinkedIn" icon={<LinkedInIcon className="h-4 w-4" />} /> : null}
           {socials.GitHub ? <IconLink href={socials.GitHub} label="GitHub" icon={<GitHubIcon className="h-4 w-4" />} /> : null}
           <Button href="/contact" className="hidden sm:inline-flex">
