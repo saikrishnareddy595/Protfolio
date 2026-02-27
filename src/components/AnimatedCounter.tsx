@@ -11,9 +11,9 @@ function parseValue(value: string): { num: number; suffix: string; prefix: strin
 
 export function AnimatedCounter({ value, duration = 1600 }: { value: string; duration?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const isInView = useInView(ref, { once: true, margin: "0px" });
   const { num, suffix, prefix } = parseValue(value);
-  const [display, setDisplay] = useState("0");
+  const [display, setDisplay] = useState(value);
 
   useEffect(() => {
     if (!isInView) return;
@@ -24,6 +24,7 @@ export function AnimatedCounter({ value, duration = 1600 }: { value: string; dur
 
     const steps = 52;
     let step = 0;
+    setDisplay(`${prefix}0${suffix}`);
 
     const timer = setInterval(() => {
       step++;
