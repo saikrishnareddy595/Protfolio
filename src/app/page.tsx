@@ -23,6 +23,8 @@ import {
   CpuIcon,
 } from "@/components/social-icons";
 import { HeroVisual } from "@/components/HeroVisual";
+import { MobileTerminal } from "@/components/MobileTerminal";
+import { DataPipeline } from "@/components/DataPipeline";
 import { experience } from "@/config/experience";
 import { projects } from "@/config/projects";
 import { siteConfig } from "@/config/site";
@@ -156,7 +158,7 @@ export default function HomePage() {
         </div>
 
         <Container>
-          <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+          <div className="grid items-center gap-10 md:grid-cols-2 md:gap-12 lg:gap-16">
             {/* Left – content */}
             <Reveal>
               <div className="space-y-7">
@@ -195,10 +197,15 @@ export default function HomePage() {
                   ))}
                 </div>
 
-                {/* Location */}
-                <p className="flex items-center gap-2 text-sm text-zinc-500">
+                {/* Location — split at dots for mobile wrapping */}
+                <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm text-zinc-500">
                   <PinIcon className="h-4 w-4 shrink-0 text-indigo-400" />
-                  <span>{siteConfig.locationLine}</span>
+                  {siteConfig.locationLine.split(" · ").map((part, i, arr) => (
+                    <span key={part} className="flex items-center gap-2">
+                      <span className="whitespace-nowrap">{part}</span>
+                      {i < arr.length - 1 && <span className="select-none text-zinc-700">·</span>}
+                    </span>
+                  ))}
                 </p>
 
                 {/* CTAs */}
@@ -240,11 +247,16 @@ export default function HomePage() {
               </div>
             </Reveal>
 
-            {/* Right – orbital visual */}
-            <Reveal delay={0.18} className="hidden lg:block">
+            {/* Right – orbital visual (tablet and desktop) */}
+            <Reveal delay={0.18} className="hidden md:block">
               <HeroVisual />
             </Reveal>
           </div>
+
+          {/* Mobile terminal — only engineers will appreciate this */}
+          <Reveal delay={0.22} className="mt-8 block md:hidden">
+            <MobileTerminal />
+          </Reveal>
         </Container>
       </section>
 
@@ -292,6 +304,11 @@ export default function HomePage() {
       {/* ── SKILLS MATRIX ───────────────────────────────────────────── */}
       <Section id="skills" title="Skills Matrix" eyebrow="Engineering Depth">
         <Container>
+          {/* Production pipeline visualizer — data flow for devs */}
+          <Reveal className="mb-8">
+            <DataPipeline />
+          </Reveal>
+
           <div className="grid gap-4 lg:grid-cols-2">
             {skillGroups.map((group, index) => {
               const cfg =
@@ -357,8 +374,8 @@ export default function HomePage() {
       <Section id="experience" title="Experience Timeline" eyebrow="Career">
         <Container>
           <div className="relative space-y-5">
-            {/* Animated vertical timeline line */}
-            <div className="absolute left-8 top-3 bottom-3 w-px overflow-hidden">
+            {/* Animated vertical timeline line — responsive position */}
+            <div className="absolute bottom-3 left-5 top-3 w-px overflow-hidden sm:left-8">
               <div
                 className="timeline-line-animate h-full w-full bg-gradient-to-b from-indigo-500/60 via-violet-500/40 to-transparent"
               />
@@ -366,9 +383,9 @@ export default function HomePage() {
 
             {experience.map((item, index) => (
               <Reveal key={item.company} delay={index * 0.08}>
-                <article className="relative ml-16 rounded-3xl border border-white/[0.08] bg-gradient-to-b from-white/[0.07] to-white/[0.03] p-6 shadow-[0_14px_36px_rgba(0,0,0,0.38)] backdrop-blur-xl transition-all duration-300 hover:border-indigo-400/25 hover:shadow-[0_20px_50px_rgba(0,0,0,0.48),0_0_30px_rgba(129,140,248,0.07)]">
-                  {/* Timeline dot / company badge */}
-                  <div className="absolute -left-[3.6rem] top-5 flex h-10 w-10 items-center justify-center rounded-full border border-indigo-400/40 bg-[#030308] text-xs font-bold text-indigo-200 shadow-[0_0_16px_rgba(129,140,248,0.2)]">
+                <article className="relative ml-12 rounded-3xl border border-white/[0.08] bg-gradient-to-b from-white/[0.07] to-white/[0.03] p-5 shadow-[0_14px_36px_rgba(0,0,0,0.38)] backdrop-blur-xl transition-all duration-300 hover:border-indigo-400/25 hover:shadow-[0_20px_50px_rgba(0,0,0,0.48),0_0_30px_rgba(129,140,248,0.07)] sm:ml-16 sm:p-6">
+                  {/* Timeline dot / company badge — responsive size & position */}
+                  <div className="absolute -left-[2.75rem] top-5 flex h-8 w-8 items-center justify-center rounded-full border border-indigo-400/40 bg-[#030308] text-[10px] font-bold text-indigo-200 shadow-[0_0_16px_rgba(129,140,248,0.2)] sm:-left-[3.25rem] sm:h-10 sm:w-10 sm:text-xs">
                     {monogram(item.company)}
                   </div>
 

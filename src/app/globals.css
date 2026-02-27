@@ -163,6 +163,108 @@ textarea:focus-visible {
   outline-offset: 2px;
 }
 
+/* ── Terminal cursor blink ───────────────────── */
+@keyframes terminal-cursor-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.terminal-cursor {
+  display: inline-block;
+  width: 6px;
+  height: 13px;
+  background-color: #818cf8;
+  animation: terminal-cursor-blink 1s step-end infinite;
+  vertical-align: middle;
+  border-radius: 1px;
+  margin-left: 1px;
+}
+
+/* ── Hex scanline (CRT effect on skill cards) ── */
+@keyframes scan-sweep {
+  0%   { top: -2px;  opacity: 0; }
+  4%   { opacity: 0.6; }
+  96%  { opacity: 0.6; }
+  100% { top: 100%; opacity: 0; }
+}
+
+.scanline-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.scanline-effect::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(129, 140, 248, 0.22) 30%,
+    rgba(129, 140, 248, 0.22) 70%,
+    transparent 100%
+  );
+  animation: scan-sweep 9s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Hex glitch (for decorative labels) ─────── */
+@keyframes hex-glitch {
+  0%, 91%, 100% { opacity: 1; transform: none; }
+  92%           { opacity: 0.4; transform: translateX(-2px) skewX(-1deg); }
+  94%           { opacity: 0.8; transform: translateX(2px) skewX(0.5deg); }
+  96%           { opacity: 0.5; transform: translateX(-1px); }
+}
+
+.hex-glitch { animation: hex-glitch 9s ease-in-out infinite; }
+
+/* ── Binary column rain (decorative background) */
+@keyframes binary-col {
+  0%   { transform: translateY(-110%); opacity: 0; }
+  6%   { opacity: 0.45; }
+  94%  { opacity: 0.45; }
+  100% { transform: translateY(110vh); opacity: 0; }
+}
+
+/* ── Packet pulse (pipeline connector dots) ──── */
+@keyframes packet-pulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50%       { opacity: 1;   transform: scale(1.2); }
+}
+
+/* ── Skill card "git blame" style annotation ─── */
+.git-blame-line::before {
+  content: attr(data-hash);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 8px;
+  color: rgba(129, 140, 248, 0.15);
+  letter-spacing: 0.08em;
+  margin-right: 8px;
+  user-select: none;
+}
+
+/* ── System resource bar animation ─────────────── */
+@keyframes cpu-load {
+  0%   { width: 62%; }
+  25%  { width: 78%; }
+  50%  { width: 55%; }
+  75%  { width: 89%; }
+  100% { width: 62%; }
+}
+
+@keyframes mem-load {
+  0%   { width: 71%; }
+  33%  { width: 68%; }
+  66%  { width: 80%; }
+  100% { width: 71%; }
+}
+
+.animate-cpu-load { animation: cpu-load 7s ease-in-out infinite; }
+.animate-mem-load { animation: mem-load 10s ease-in-out infinite; }
+
 /* ── Reduced motion ──────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   html {

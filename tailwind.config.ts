@@ -26,6 +26,12 @@ const config: Config = {
         "spin-reverse": "spin-reverse 20s linear infinite",
         "glow-pulse": "glow-pulse 3s ease-in-out infinite",
         "fade-up": "fade-up 0.6s ease forwards",
+        /* tech-themed animation utilities */
+        "terminal-blink": "terminal-cursor-blink 1s step-end infinite",
+        "hex-glitch": "hex-glitch 9s ease-in-out infinite",
+        "binary-rain": "binary-col 4s linear infinite",
+        "packet": "packet-pulse 1.6s ease-in-out infinite",
+        "scan": "scan-sweep 9s linear infinite",
       },
       keyframes: {
         float: {
@@ -55,6 +61,33 @@ const config: Config = {
         "fade-up": {
           "0%": { opacity: "0", transform: "translateY(20px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        /* tech-themed keyframes */
+        "terminal-cursor-blink": {
+          "0%, 49%": { opacity: "1" },
+          "50%, 100%": { opacity: "0" },
+        },
+        "hex-glitch": {
+          "0%, 91%, 100%": { opacity: "1", transform: "none" },
+          "92%": { opacity: "0.4", transform: "translateX(-2px) skewX(-1deg)" },
+          "94%": { opacity: "0.8", transform: "translateX(2px)" },
+          "96%": { opacity: "0.5", transform: "translateX(-1px)" },
+        },
+        "binary-col": {
+          "0%":   { transform: "translateY(-110%)", opacity: "0" },
+          "6%":   { opacity: "0.45" },
+          "94%":  { opacity: "0.45" },
+          "100%": { transform: "translateY(110vh)", opacity: "0" },
+        },
+        "packet-pulse": {
+          "0%, 100%": { opacity: "0.3", transform: "scale(0.8)" },
+          "50%":      { opacity: "1",   transform: "scale(1.2)" },
+        },
+        "scan-sweep": {
+          "0%":   { top: "-2px", opacity: "0" },
+          "4%":   { opacity: "0.6" },
+          "96%":  { opacity: "0.6" },
+          "100%": { top: "100%", opacity: "0" },
         },
       },
       boxShadow: {
