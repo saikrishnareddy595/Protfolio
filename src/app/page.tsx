@@ -25,6 +25,10 @@ import {
 import { HeroVisual } from "@/components/HeroVisual";
 import { MobileTerminal } from "@/components/MobileTerminal";
 import { DataPipeline } from "@/components/DataPipeline";
+import { NeuralParticles } from "@/components/NeuralParticles";
+import { TypewriterRole } from "@/components/TypewriterRole";
+import { AIChatWidget } from "@/components/AIChatWidget";
+import { AIAvatarHero } from "@/components/AIAvatar";
 import { experience } from "@/config/experience";
 import { projects } from "@/config/projects";
 import { siteConfig } from "@/config/site";
@@ -143,6 +147,20 @@ const metricAccents = [
   },
 ];
 
+// AI Skills data
+const aiSkills = [
+  { label: "LangChain / LlamaIndex", icon: "🔗" },
+  { label: "NVIDIA NIM APIs", icon: "⚡" },
+  { label: "RAG Pipeline Design", icon: "🧠" },
+  { label: "Vector Databases (Pinecone, Chroma)", icon: "🗄️" },
+  { label: "LLM Integration & Prompt Engineering", icon: "💬" },
+  { label: "ML Feature Stores", icon: "📦" },
+  { label: "Model Serving Infrastructure", icon: "🚀" },
+  { label: "Hugging Face Transformers", icon: "🤗" },
+  { label: "OpenAI API / Compatible APIs", icon: "🔮" },
+  { label: "AI-Augmented ETL Pipelines", icon: "🔄" },
+];
+
 export default function HomePage() {
   return (
     <>
@@ -150,6 +168,9 @@ export default function HomePage() {
 
       {/* ── HERO ─────────────────────────────────────────────────────── */}
       <section className="relative flex min-h-[92vh] items-center overflow-hidden pb-16 pt-12 sm:pt-16">
+        {/* Neural network particle background */}
+        <NeuralParticles />
+
         {/* Animated background orbs */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="animate-orb-1 absolute -left-48 -top-48 h-[700px] w-[700px] rounded-full bg-indigo-600/10 blur-[120px]" />
@@ -157,23 +178,31 @@ export default function HomePage() {
           <div className="animate-orb-3 absolute left-1/2 top-1/3 h-[400px] w-[400px] -translate-x-1/2 rounded-full bg-cyan-500/5 blur-[100px]" />
         </div>
 
-        <Container>
+        <Container className="relative z-10">
           <div className="grid items-center gap-10 md:grid-cols-2 md:gap-12 lg:gap-16">
             {/* Left – content */}
             <Reveal>
               <div className="space-y-7">
-                {/* Status badge */}
-                <div className="inline-flex items-center gap-2.5 rounded-full border border-emerald-500/30 bg-emerald-500/[0.08] px-4 py-1.5">
-                  <span className="status-dot h-2 w-2 rounded-full bg-emerald-400" />
-                  <span className="text-xs font-semibold tracking-wide text-emerald-300">
-                    Open to Opportunities
-                  </span>
+                {/* Status badges */}
+                <div className="flex flex-wrap items-center gap-2.5">
+                  <div className="inline-flex items-center gap-2.5 rounded-full border border-emerald-500/30 bg-emerald-500/[0.08] px-4 py-1.5">
+                    <span className="status-dot h-2 w-2 rounded-full bg-emerald-400" />
+                    <span className="text-xs font-semibold tracking-wide text-emerald-300">
+                      Open to Opportunities
+                    </span>
+                  </div>
+                  <div className="inline-flex items-center gap-2 rounded-full border border-violet-500/35 bg-violet-500/[0.1] px-4 py-1.5">
+                    <span className="text-xs">⚡</span>
+                    <span className="text-xs font-semibold tracking-wide text-violet-300">
+                      LLM Infra Specialist
+                    </span>
+                  </div>
                 </div>
 
-                {/* Role label */}
-                <p className="font-heading text-xs font-bold uppercase tracking-[0.32em] text-indigo-400">
-                  {siteConfig.role}
-                </p>
+                {/* Typewriter role label */}
+                <div className="font-heading text-xs font-bold uppercase tracking-[0.32em] text-indigo-400">
+                  <TypewriterRole />
+                </div>
 
                 {/* Name headline */}
                 <h1 className="font-heading text-5xl font-extrabold leading-[1.04] tracking-tight sm:text-6xl lg:text-7xl">
@@ -181,10 +210,19 @@ export default function HomePage() {
                   <span className="gradient-text block">Reddy</span>
                 </h1>
 
-                {/* Tagline */}
-                <p className="max-w-xl text-lg leading-8 text-zinc-300">
-                  {siteConfig.tagline}
-                </p>
+                {/* AI Avatar + Tagline row */}
+                <div className="flex items-start gap-4">
+                  {/* AI Avatar — welcome widget */}
+                  <div className="shrink-0">
+                    <AIAvatarHero />
+                    <p className="mt-1 text-center font-mono text-[9px] tracking-widest text-violet-500">
+                      AI · ME
+                    </p>
+                  </div>
+                  <p className="max-w-lg pt-2 text-lg leading-8 text-zinc-300">
+                    {siteConfig.tagline}
+                  </p>
+                </div>
 
                 {/* Trust line */}
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
@@ -197,7 +235,7 @@ export default function HomePage() {
                   ))}
                 </div>
 
-                {/* Location — split at dots for mobile wrapping */}
+                {/* Location */}
                 <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm text-zinc-500">
                   <PinIcon className="h-4 w-4 shrink-0 text-indigo-400" />
                   {siteConfig.locationLine.split(" · ").map((part, i, arr) => (
@@ -253,9 +291,49 @@ export default function HomePage() {
             </Reveal>
           </div>
 
-          {/* Mobile terminal — only engineers will appreciate this */}
+          {/* Mobile terminal */}
           <Reveal delay={0.22} className="mt-8 block md:hidden">
             <MobileTerminal />
+          </Reveal>
+        </Container>
+      </section>
+
+      {/* ── CURRENTLY BUILDING ──────────────────────────────────────── */}
+      <section className="py-4">
+        <Container>
+          <Reveal>
+            <div className="relative overflow-hidden rounded-2xl border border-cyan-500/25 bg-gradient-to-r from-cyan-500/[0.05] to-violet-500/[0.05] px-5 py-4 shadow-[0_0_30px_rgba(6,182,212,0.07)]">
+              {/* Animated top line */}
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-500/60 to-transparent" />
+
+              <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+                {/* Live pulse dot */}
+                <div className="flex shrink-0 items-center gap-2">
+                  <span className="live-pulse-dot inline-block h-2.5 w-2.5 rounded-full bg-cyan-400" />
+                  <span className="font-mono text-xs font-bold uppercase tracking-[0.22em] text-cyan-400">
+                    🔬 Currently Building
+                  </span>
+                </div>
+
+                <span className="hidden text-zinc-700 sm:inline">—</span>
+
+                <p className="text-sm leading-relaxed text-zinc-300">
+                  Agent-based data quality monitor using{" "}
+                  <code className="rounded bg-violet-500/15 px-1.5 py-0.5 font-mono text-xs text-violet-300">
+                    LangGraph
+                  </code>{" "}
+                  +{" "}
+                  <code className="rounded bg-cyan-500/15 px-1.5 py-0.5 font-mono text-xs text-cyan-300">
+                    Databricks
+                  </code>{" "}
+                  +{" "}
+                  <code className="rounded bg-violet-500/15 px-1.5 py-0.5 font-mono text-xs text-violet-300">
+                    NVIDIA NIM
+                  </code>{" "}
+                  — autonomous pipeline healing at scale.
+                </p>
+              </div>
+            </div>
           </Reveal>
         </Container>
       </section>
@@ -304,7 +382,7 @@ export default function HomePage() {
       {/* ── SKILLS MATRIX ───────────────────────────────────────────── */}
       <Section id="skills" title="Skills Matrix" eyebrow="Engineering Depth">
         <Container>
-          {/* Production pipeline visualizer — data flow for devs */}
+          {/* Production pipeline visualizer */}
           <Reveal className="mb-8">
             <DataPipeline />
           </Reveal>
@@ -370,11 +448,65 @@ export default function HomePage() {
         </Container>
       </Section>
 
+      {/* ── AI & LLM ENGINEERING ────────────────────────────────────── */}
+      <Section id="ai-skills" title="AI & LLM Engineering" eyebrow="Artificial Intelligence">
+        <Container>
+          <Reveal>
+            <p className="mb-8 max-w-2xl text-base leading-7 text-zinc-400">
+              Specialized in building the data infrastructure layer that makes AI systems
+              production-ready — from vector ingestion pipelines to LLM-serving data layers.
+            </p>
+          </Reveal>
+
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+            {aiSkills.map((skill, index) => (
+              <Reveal key={skill.label} delay={index * 0.045}>
+                <div
+                  className="ai-skill-shimmer group relative cursor-default overflow-hidden rounded-2xl border border-violet-500/20 p-4 text-center shadow-[0_4px_20px_rgba(0,0,0,0.3)] transition-all duration-300 hover:border-violet-400/40 hover:shadow-[0_8px_32px_rgba(124,58,237,0.2),0_0_40px_rgba(6,182,212,0.08)]"
+                  style={{ background: "rgba(124,58,237,0.06)" }}
+                >
+                  {/* Top accent line */}
+                  <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-500/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+
+                  <span className="mb-2 block text-2xl">{skill.icon}</span>
+                  <span className="text-xs font-semibold leading-tight text-zinc-300 transition-colors duration-200 group-hover:text-violet-200">
+                    {skill.label}
+                  </span>
+
+                  {/* Bottom teal accent */}
+                  <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                </div>
+              </Reveal>
+            ))}
+          </div>
+
+          {/* Architecture note */}
+          <Reveal delay={0.3}>
+            <div className="mt-8 overflow-hidden rounded-2xl border border-violet-500/15 bg-gradient-to-r from-violet-500/[0.06] to-cyan-500/[0.04] p-5">
+              <div className="flex items-start gap-3">
+                <span className="mt-0.5 shrink-0 text-xl">🏗️</span>
+                <div>
+                  <p className="mb-1 font-heading text-sm font-bold text-violet-200">
+                    From raw data to inference layer
+                  </p>
+                  <p className="text-sm leading-6 text-zinc-400">
+                    I bridge the gap between data engineering and AI/ML — building the pipelines,
+                    feature stores, and serving layers that keep models trained on fresh, clean,
+                    governed data. When the AI team needs a production-grade data foundation,
+                    that&apos;s where I come in.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+        </Container>
+      </Section>
+
       {/* ── EXPERIENCE TIMELINE ─────────────────────────────────────── */}
       <Section id="experience" title="Experience Timeline" eyebrow="Career">
         <Container>
           <div className="relative space-y-5">
-            {/* Animated vertical timeline line — responsive position */}
+            {/* Animated vertical timeline line */}
             <div className="absolute bottom-3 left-5 top-3 w-px overflow-hidden sm:left-8">
               <div
                 className="timeline-line-animate h-full w-full bg-gradient-to-b from-indigo-500/60 via-violet-500/40 to-transparent"
@@ -384,7 +516,7 @@ export default function HomePage() {
             {experience.map((item, index) => (
               <Reveal key={item.company} delay={index * 0.08}>
                 <article className="relative ml-12 rounded-3xl border border-white/[0.08] bg-gradient-to-b from-white/[0.07] to-white/[0.03] p-5 shadow-[0_14px_36px_rgba(0,0,0,0.38)] backdrop-blur-xl transition-all duration-300 hover:border-indigo-400/25 hover:shadow-[0_20px_50px_rgba(0,0,0,0.48),0_0_30px_rgba(129,140,248,0.07)] sm:ml-16 sm:p-6">
-                  {/* Timeline dot / company badge — responsive size & position */}
+                  {/* Timeline dot / company badge */}
                   <div className="absolute -left-[2.75rem] top-5 flex h-8 w-8 items-center justify-center rounded-full border border-indigo-400/40 bg-[#030308] text-[10px] font-bold text-indigo-200 shadow-[0_0_16px_rgba(129,140,248,0.2)] sm:-left-[3.25rem] sm:h-10 sm:w-10 sm:text-xs">
                     {monogram(item.company)}
                   </div>
@@ -492,7 +624,7 @@ export default function HomePage() {
                   Let&apos;s Connect
                 </p>
                 <h2 className="font-heading mt-3 text-3xl font-extrabold leading-tight text-white sm:text-4xl lg:text-5xl">
-                  Open to Senior Data<br className="hidden sm:block" /> Engineering opportunities
+                  Open to Senior Data &amp; AI<br className="hidden sm:block" /> Engineering opportunities
                 </h2>
                 <p className="mt-4 text-base text-zinc-300">
                   I respond within 24 hours. Let&apos;s discuss your data platform challenges.
@@ -527,6 +659,9 @@ export default function HomePage() {
           </Reveal>
         </Container>
       </Section>
+
+      {/* ── FLOATING AI CHAT WIDGET ──────────────────────────────────── */}
+      <AIChatWidget />
     </>
   );
 }
