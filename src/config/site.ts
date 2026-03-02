@@ -1,12 +1,12 @@
 export const siteConfig = {
   name: "Krishna Reddy",
-  role: "Senior Data Engineer",
-  title: "Krishna Reddy — Portfolio",
+  role: "Senior Data & AI Engineer",
+  title: "Krishna Reddy — AI Engineer Portfolio",
   url: "https://krishnareddy.vercel.app",
   description:
-    "Senior Data Engineer with 5+ years building production-grade lakehouse and streaming platforms. Spark, Kafka, Airflow, AWS, Snowflake, Databricks.",
+    "Senior Data & AI Engineer with 5+ years building production-grade lakehouse + streaming platforms that power ML/AI systems at Fortune 500 scale — where data engineering meets LLM infrastructure.",
   tagline:
-    "Senior Data Engineer with 5+ years helping Fortune 500 teams build production-grade lakehouse + streaming platforms.",
+    "Building intelligent lakehouse + streaming platforms that power ML/AI systems at Fortune 500 scale — where data engineering meets LLM infrastructure.",
   trustLine: "Experience across Charter Communications, Wells Fargo, and McKesson.",
   locationLine: "Charlotte, NC · Open to Remote · US Work Authorized",
   footerLine: "Charlotte, NC · Open to Remote · US Work Authorized",

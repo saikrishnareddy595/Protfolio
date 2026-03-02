@@ -12,12 +12,15 @@ export function Footer() {
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent" />
 
       <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-5 px-4 py-10 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
-        <div className="space-y-1">
+        <div className="space-y-1.5">
           <p className="font-heading text-sm font-bold tracking-[0.2em] text-white">
             KRISHNA REDDY
           </p>
           <p className="text-xs text-zinc-500">
-            © {new Date().getFullYear()} · Senior Data Engineer · {siteConfig.footerLine}
+            © {new Date().getFullYear()} · Senior Data &amp; AI Engineer · {siteConfig.footerLine}
+          </p>
+          <p className="font-mono text-[10px] tracking-wide text-zinc-700">
+            ⚡ This portfolio was designed and built with AI assistance — because I use the tools I build with.
           </p>
         </div>
 
