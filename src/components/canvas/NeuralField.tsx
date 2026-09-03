@@ -97,7 +97,7 @@ export function NeuralField() {
     const tint = new Float32Array(count);
 
     for (let i = 0; i < count; i++) {
-      // Two thirds form a shell around the bust; the rest tunnel backwards.
+      // Two thirds form a shell around the subject; the rest tunnel backwards.
       const corridor = rand() > 0.6;
       let x: number, y: number, z: number;
 
@@ -193,7 +193,7 @@ export function NeuralField() {
     const p = scroll.progress;
 
     // Lives across the hero and hands over to the agent graph.
-    const target = envelope(p, -0.05, 0.02, 0.26, 0.4);
+    const target = envelope(p, -0.05, 0.02, 0.3, 0.42);
     fade.current = damp(fade.current, target, 6, d);
 
     const u = matRef.current?.uniforms;

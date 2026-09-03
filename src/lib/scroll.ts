@@ -1,5 +1,7 @@
 "use client";
 
+import { chapters } from "./content";
+
 /**
  * A single mutable object shared between the GSAP ScrollTrigger driver (DOM)
  * and every `useFrame` callback in the R3F scene. Writing here instead of to
@@ -26,6 +28,8 @@ export type ScrollState = {
   ready: boolean;
   reducedMotion: boolean;
   tier: PerfTier;
+  /** The live smooth-scroll instance, when one is running. */
+  lenis: { scrollTo: (target: number | string | HTMLElement, opts?: object) => void } | null;
 };
 
 export const scroll: ScrollState = {
@@ -39,6 +43,7 @@ export const scroll: ScrollState = {
   ready: false,
   reducedMotion: false,
   tier: "high",
+  lenis: null,
 };
 
 /**
@@ -47,8 +52,8 @@ export const scroll: ScrollState = {
  * whatever is on screen behind it.
  */
 export const TIMELINE = {
-  hero: { in: -0.06, hold: 0.0, out: 0.11, end: 0.19 },
-  graph: { in: 0.15, hold: 0.25, out: 0.36, end: 0.44 },
+  hero: { in: -0.06, hold: 0.0, out: 0.085, end: 0.135 },
+  graph: { in: 0.17, hold: 0.26, out: 0.38, end: 0.44 },
   tunnel: { in: 0.4, hold: 0.5, out: 0.62, end: 0.7 },
   rack: { in: 0.66, hold: 0.76, out: 0.92, end: 0.99 },
 } as const;
@@ -59,13 +64,13 @@ export const TIMELINE = {
  */
 export const CAMERA_Z: [number, number][] = [
   [0.0, 9],
-  [0.06, 8.6],
-  [0.11, 6.6],
-  [0.155, -6],
-  [0.2, -16],
-  [0.28, -19.5],
-  [0.36, -23],
-  [0.42, -33],
+  [0.08, 8.2],
+  [0.12, 5.5],
+  [0.17, -6],
+  [0.21, -16],
+  [0.3, -19.5],
+  [0.38, -23],
+  [0.44, -33],
   [0.5, -70],
   [0.62, -96],
   [0.7, -110],
@@ -90,19 +95,29 @@ export const SECTION_VH = {
 } as const;
 
 /**
- * Where each section's top must land on the 0 → 1 timeline. Derived from
- * SECTION_VH against a scrollable range of 960 - 100 = 860vh, but applied by
- * measuring the real DOM so the scenes stay locked to the copy even when a
- * section renders taller than its nominal height.
+ * Where each section's top must land on the 0 → 1 timeline. Applied by
+ * measuring the real DOM, so the scenes stay locked to the copy even when a
+ * section renders taller than nominal. Sourced from the chapter list so the
+ * ids can never drift away from the sections they address.
  */
-export const TIMELINE_STOPS = [
-  { id: "hero", t: 0 },
-  { id: "profile-snapshot", t: 0.04 },
-  { id: "spectrum", t: 140 / 860 },
-  { id: "capital-one", t: 360 / 860 },
-  { id: "teradata", t: 580 / 860 },
-  { id: "contact", t: 800 / 860 },
-] as const;
+export const TIMELINE_STOPS: { id: string; t: number }[] = chapters.map(
+  ({ id, t }) => ({ id, t })
+);
+
+/**
+ * Navigate to a section. Routes through the smooth-scroll instance when one is
+ * running so nav clicks glide instead of teleporting, and falls back to native
+ * scrolling when it isn't (reduced motion, or before hydration).
+ */
+export function scrollToSection(id: string) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (scroll.lenis) {
+    scroll.lenis.scrollTo(el, { offset: 0, duration: 1.4 });
+    return;
+  }
+  el.scrollIntoView({ behavior: scroll.reducedMotion ? "auto" : "smooth", block: "start" });
+}
 
 export function detectTier(): PerfTier {
   if (typeof window === "undefined") return "high";

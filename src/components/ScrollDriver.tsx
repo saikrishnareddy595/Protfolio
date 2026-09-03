@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Lenis from "lenis";
 import { scroll, TIMELINE_STOPS } from "@/lib/scroll";
 import { clamp } from "@/lib/math";
 
@@ -18,10 +19,16 @@ gsap.registerPlugin(ScrollTrigger);
  * height differs from the nominal one (long capability lists on a narrow
  * phone, a taller font fallback) therefore can't drift the scenes out of sync
  * with the copy in front of them.
+ *
+ * Wheel and keyboard scrolling run through Lenis so the page eases instead of
+ * stepping, which is what makes a scrub-driven 3D scene read as smooth rather
+ * than strobed. Touch is left native — momentum scrolling on a phone is
+ * already smooth and hijacking it only adds latency.
  */
 export function ScrollDriver() {
   useEffect(() => {
     const doc = document.documentElement;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let rawVelocity = 0;
     let stops: { y: number; t: number }[] = [];
 
@@ -54,6 +61,28 @@ export function ScrollDriver() {
 
     measure();
 
+    // ---- Smooth scrolling -------------------------------------------------
+    const lenis = reduced
+      ? null
+      : new Lenis({
+          duration: 1.05,
+          // Exponential ease-out: quick to respond, long to settle.
+          easing: (t: number) => 1 - Math.pow(1 - t, 3.4),
+          smoothWheel: true,
+          syncTouch: false,
+          wheelMultiplier: 1,
+          touchMultiplier: 1.6,
+        });
+
+    if (lenis) {
+      // ScrollTrigger must be told about Lenis-driven scroll positions, and
+      // Lenis must be advanced from GSAP's ticker so the two never fight over
+      // the frame.
+      lenis.on("scroll", ScrollTrigger.update);
+      gsap.ticker.lagSmoothing(0);
+      scroll.lenis = lenis;
+    }
+
     const trigger = ScrollTrigger.create({
       trigger: doc,
       start: "top top",
@@ -67,7 +96,8 @@ export function ScrollDriver() {
 
     // Decay + smooth the velocity every tick so the tunnel relaxes naturally
     // instead of snapping back the instant the wheel stops.
-    const tick = () => {
+    const tick = (time: number) => {
+      lenis?.raf(time * 1000);
       rawVelocity *= 0.9;
       scroll.velocity += (rawVelocity - scroll.velocity) * 0.14;
     };
@@ -96,6 +126,9 @@ export function ScrollDriver() {
 
     return () => {
       gsap.ticker.remove(tick);
+      gsap.ticker.lagSmoothing(500, 33);
+      scroll.lenis = null;
+      lenis?.destroy();
       trigger.kill();
       window.removeEventListener("pointermove", onPointer);
       window.removeEventListener("deviceorientation", onOrientation);

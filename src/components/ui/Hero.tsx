@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { heroStats, profile, engineeringPillars } from "@/lib/content";
+import { heroStats, profile, engineeringPillars, selectedProjects } from "@/lib/content";
 import { StatusDot, GithubIcon, LinkedinIcon } from "./primitives";
 import { FileText, Mail, ArrowDown, Sparkles, Terminal } from "lucide-react";
 
@@ -20,8 +20,8 @@ export function Hero({ started }: { started: boolean }) {
   const animate = started ? "show" : "hidden";
 
   return (
-    <section id="hero" className="relative" style={{ minHeight: "135svh" }}>
-      <div className="sticky top-0 flex min-h-[100svh] flex-col justify-between overflow-hidden px-5 pb-12 pt-20 sm:px-8 sm:pb-14 sm:pt-24">
+    <section id="hero" className="relative" style={{ height: "135svh" }}>
+      <div className="sticky top-0 flex h-[100svh] flex-col justify-between overflow-hidden px-5 pb-12 pt-20 short:pb-8 short:pt-16 sm:px-8 sm:pb-14 sm:pt-24">
         {/* Top bar: Recruiter status & rapid context */}
         <motion.div
           initial="hidden"
@@ -43,7 +43,7 @@ export function Hero({ started }: { started: boolean }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: started ? 1 : 0 }}
           transition={{ delay: 1.4, duration: 0.8 }}
-          className="pointer-events-none absolute inset-x-0 bottom-2.5 z-20 flex justify-center"
+          className="pointer-events-none absolute inset-x-0 bottom-2.5 z-20 flex justify-center short:hidden"
         >
           <a
             href="#profile-snapshot"
@@ -68,7 +68,7 @@ export function Hero({ started }: { started: boolean }) {
               animate={animate}
               variants={line}
               custom={1}
-              className="mb-3 flex flex-wrap items-center gap-2 sm:mb-4 sm:gap-3"
+              className="mb-3 flex flex-wrap items-center gap-2 short:mb-2 sm:mb-4 sm:gap-3"
             >
               <span className="rounded border border-cyber/40 bg-cyber/10 px-2.5 py-1 font-mono text-[0.68rem] font-medium tracking-[0.16em] uppercase text-cyber">
                 5+ Years Experience
@@ -83,7 +83,7 @@ export function Hero({ started }: { started: boolean }) {
             </motion.div>
 
             {/* Candidate Name */}
-            <h1 className="display text-gradient text-[clamp(2.6rem,9vw,7.8rem)]">
+            <h1 className="display text-gradient text-[clamp(2.6rem,9vw,7.8rem)] short:text-[clamp(2rem,6.4vw,4.2rem)] shorter:text-[clamp(1.85rem,5.6vw,3.4rem)]">
               <span className="block overflow-hidden">
                 <motion.span initial="hidden" animate={animate} variants={line} custom={2} className="block">
                   Sai Krishna
@@ -108,7 +108,7 @@ export function Hero({ started }: { started: boolean }) {
               animate={animate}
               variants={line}
               custom={4}
-              className="mt-4 flex flex-wrap items-center gap-2 font-mono text-[0.68rem] tracking-wide text-silver-dim sm:mt-5"
+              className="mt-4 flex flex-wrap items-center gap-2 font-mono text-[0.68rem] tracking-wide text-silver-dim short:hidden sm:mt-5"
             >
               <span className="text-silver-faint uppercase tracking-widest text-[0.62rem]">Core Focus:</span>
               {engineeringPillars.map((p) => (
@@ -123,14 +123,14 @@ export function Hero({ started }: { started: boolean }) {
             </motion.div>
 
             {/* Actions & Recruiter Summary Row */}
-            <div className="mt-6 flex flex-col gap-6 border-t border-white/10 pt-5 lg:flex-row lg:items-end lg:justify-between lg:gap-12">
+            <div className="mt-6 flex flex-col gap-6 border-t border-white/10 pt-5 short:mt-4 short:gap-4 short:pt-4 xl:flex-row xl:items-end xl:justify-between xl:gap-12">
               <div className="max-w-2xl space-y-4">
                 <motion.p
                   initial="hidden"
                   animate={animate}
                   variants={line}
                   custom={5}
-                  className="pretty text-[0.92rem] leading-relaxed text-silver-dim sm:text-[0.98rem]"
+                  className="pretty text-[0.92rem] leading-relaxed text-silver-dim shorter:hidden sm:text-[0.98rem]"
                 >
                   {profile.summary}
                 </motion.p>
@@ -182,7 +182,7 @@ export function Hero({ started }: { started: boolean }) {
                   </a>
 
                   <a
-                    href="#projects"
+                    href={`#${selectedProjects[0].id}`}
                     className="glass-soft hidden items-center gap-1.5 rounded-full px-3.5 py-2.5 font-mono text-[0.7rem] uppercase tracking-[0.12em] text-violet transition-colors hover:text-white sm:inline-flex"
                   >
                     <Sparkles className="h-3.5 w-3.5" />
@@ -197,7 +197,7 @@ export function Hero({ started }: { started: boolean }) {
                 animate={animate}
                 variants={line}
                 custom={7}
-                className="grid shrink-0 grid-cols-3 gap-x-5 gap-y-1 sm:gap-x-8"
+                className="grid min-w-0 grid-cols-3 gap-x-5 gap-y-1 sm:gap-x-8 xl:shrink-0"
               >
                 {heroStats.map((s) => (
                   <div key={s.label}>

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { chapters, profile } from "@/lib/content";
-import { scroll } from "@/lib/scroll";
+import { scroll, scrollToSection } from "@/lib/scroll";
 import { StatusDot } from "./primitives";
 
 export function Nav({
@@ -20,14 +20,12 @@ export function Nav({
   // Track the active chapter off the shared scroll value — no scroll listeners
   // in React, no re-render unless the chapter actually changes.
   useEffect(() => {
-    const bounds: [string, number, number][] = [
-      ["hero", 0, 0.035],
-      ["profile-snapshot", 0.035, 0.155],
-      ["spectrum", 0.155, 0.41],
-      ["capital-one", 0.41, 0.665],
-      ["teradata", 0.665, 0.925],
-      ["contact", 0.925, 1.01],
-    ];
+    // Each chapter owns the timeline range from its own stop to the next.
+    const bounds: [string, number, number][] = chapters.map((c, i) => [
+      c.id,
+      c.t,
+      i + 1 < chapters.length ? chapters[i + 1].t : 1.01,
+    ]);
     let current = "hero";
     const loop = () => {
       const p = scroll.progress;
@@ -42,6 +40,12 @@ export function Nav({
     return () => cancelAnimationFrame(raf.current);
   }, []);
 
+  const go = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    setOpen(false);
+    scrollToSection(id);
+  };
+
   return (
     <motion.header
       initial={{ opacity: 0, y: -18 }}
@@ -52,6 +56,7 @@ export function Nav({
       <nav className="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-5 py-4 sm:px-8 sm:py-5">
         <a
           href="#hero"
+          onClick={(e) => go(e, "hero")}
           className="glass-soft group flex items-center gap-2.5 rounded-full py-2 pl-3 pr-4 text-sm"
         >
           <StatusDot />
@@ -59,11 +64,12 @@ export function Nav({
         </a>
 
         <div className="flex items-center gap-2">
-          <ul className="glass-soft hidden items-center gap-1 rounded-full px-1.5 py-1.5 md:flex">
+          <ul className="glass-soft hidden items-center gap-1 rounded-full px-1.5 py-1.5 lg:flex">
             {chapters.map((c) => (
               <li key={c.id}>
                 <a
                   href={`#${c.id}`}
+                  onClick={(e) => go(e, c.id)}
                   aria-current={active === c.id ? "true" : undefined}
                   className={`relative block rounded-full px-3.5 py-1.5 font-mono text-[0.68rem] uppercase tracking-[0.16em] transition-colors duration-300 ${
                     active === c.id ? "text-white" : "text-silver-faint hover:text-silver-dim"
@@ -119,7 +125,7 @@ export function Nav({
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
-            className="glass-soft flex h-9 w-9 items-center justify-center rounded-full text-silver-dim md:hidden"
+            className="glass-soft flex h-9 w-9 items-center justify-center rounded-full text-silver-dim lg:hidden"
             aria-expanded={open}
             aria-label="Toggle navigation"
           >
@@ -134,13 +140,13 @@ export function Nav({
         <motion.ul
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="glass mx-5 mb-2 grid gap-1 rounded-2xl p-2 md:hidden"
+          className="glass mx-5 mb-2 grid gap-1 rounded-2xl p-2 lg:hidden"
         >
           {chapters.map((c) => (
             <li key={c.id}>
               <a
                 href={`#${c.id}`}
-                onClick={() => setOpen(false)}
+                onClick={(e) => go(e, c.id)}
                 className={`block rounded-xl px-4 py-3 font-mono text-[0.72rem] uppercase tracking-[0.16em] ${
                   active === c.id ? "bg-white/[0.07] text-white" : "text-silver-dim"
                 }`}
