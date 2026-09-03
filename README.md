@@ -24,7 +24,7 @@ network" is a real translation in world space rather than a cross-fade.
 
 | Scroll band | Section | World Z | 3D scene |
 | --- | --- | --- | --- |
-| 0.00 – 0.16 | Hero | 0 | Avatar + neural particle field |
+| 0.00 – 0.16 | Hero | 0 | Avatar slab + neural particle field |
 | 0.16 – 0.42 | Spectrum | −42 | Supervisor → worker → endpoint agent graph |
 | 0.42 – 0.67 | Capital One | −58 → −112 | Velocity-driven data tunnel |
 | 0.67 – 0.93 | Teradata | −134 | Server rack, 360° rotation |
@@ -51,8 +51,8 @@ Drop the artwork into `public/` as `avatar.png` (or `.jpg` / `.jpeg` /
 `.webp` / `.avif`) — the first candidate that loads wins, no config needed. A
 portrait crop around 4:5 with the face in the upper half is ideal.
 
-If no `avatar.*` file is present, the scene falls back to a procedural
-sculpted bust so the hero is never empty. See `public/README.md`.
+If no `avatar.*` file is present, the scene falls back to an abstract neural
+core rather than a stand-in likeness. See `public/README.md`.
 
 ## Performance and accessibility
 

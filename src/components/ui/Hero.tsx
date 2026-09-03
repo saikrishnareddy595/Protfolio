@@ -21,7 +21,7 @@ export function Hero({ started }: { started: boolean }) {
   return (
     <section id="hero" className="relative" style={{ height: "140svh" }}>
       <div className="sticky top-0 flex h-[100svh] flex-col justify-between overflow-hidden px-5 pb-14 pt-24 sm:px-8 sm:pb-16">
-        {/* Top-left: who and what, kept small so the bust owns the frame. */}
+        {/* Top-left: who and what, kept small so the subject owns the frame. */}
         <motion.div
           initial="hidden"
           animate={animate}
@@ -31,7 +31,7 @@ export function Hero({ started }: { started: boolean }) {
         >
           <div className="flex items-center gap-2.5">
             <StatusDot />
-            <span className="eyebrow">Open to senior AI systems roles</span>
+            <span className="eyebrow">Open to AI Engineer roles</span>
           </div>
         </motion.div>
 

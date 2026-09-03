@@ -13,12 +13,13 @@ import { damp, envelope } from "@/lib/math";
  * background, and is graded into the site palette so it belongs in the void.
  *
  * Drop the artwork at `public/avatar.png` (or .jpg / .webp / .avif) — the first
- * candidate that loads wins. If none is present the sculpted stand-in is used.
+ * candidate that loads wins. If none is present the abstract neural core in
+ * `Avatar.tsx` is used instead — a wrong face is worse than no face.
  */
 
 export const PORTRAIT_CANDIDATES = [
-  "/avatar.png",
   "/avatar.jpg",
+  "/avatar.png",
   "/avatar.jpeg",
   "/avatar.webp",
   "/avatar.avif",
@@ -122,9 +123,9 @@ const FRAG = /* glsl */ `
     float subject = smoothstep(0.72, 0.2, distance(vUv, uFocus));
     col = mix(recede, col, clamp(subject + 0.1, 0.0, 1.0));
 
-    // Vignette.
+    // Vignette — soft enough that the shoulders don't crush to black.
     float v = length((vUv - 0.5) * vec2(1.1, 1.0)) * 1.55;
-    col *= mix(1.0, 0.3, smoothstep(0.42, 1.05, v));
+    col *= mix(1.0, 0.44, smoothstep(0.5, 1.12, v));
 
     // Luminous edge, cyan at the top fading to violet at the base.
     float edge = 1.0 - smoothstep(0.0, 0.022, abs(sdf));
@@ -185,7 +186,7 @@ export function Portrait({ texture }: { texture: THREE.Texture }) {
       uAspect: { value: aspect },
       uMouse: { value: new THREE.Vector2() },
       // The face sits high in a portrait crop; parallax and grading key off it.
-      uFocus: { value: new THREE.Vector2(0.5, 0.68) },
+      uFocus: { value: new THREE.Vector2(0.5, 0.66) },
       uCyber: { value: new THREE.Color("#4cc9ff") },
       uViolet: { value: new THREE.Color("#a06bff") },
       uBow: { value: 0.34 },

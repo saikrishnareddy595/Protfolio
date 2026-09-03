@@ -97,7 +97,7 @@ export function NeuralField() {
     const tint = new Float32Array(count);
 
     for (let i = 0; i < count; i++) {
-      // Two thirds form a shell around the bust; the rest tunnel backwards.
+      // Two thirds form a shell around the subject; the rest tunnel backwards.
       const corridor = rand() > 0.6;
       let x: number, y: number, z: number;
 
