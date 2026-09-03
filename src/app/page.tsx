@@ -1,5 +1,5 @@
 import Shell from "@/components/Shell";
-import { capabilities, credentials, profile, scenes } from "@/lib/content";
+import { capabilities, credentials, profile, selectedProjects } from "@/lib/content";
 
 /**
  * The visible page is a client-driven WebGL experience, so the crawlable,
@@ -15,7 +15,6 @@ function StructuredData() {
     description: profile.summary,
     email: `mailto:${profile.email}`,
     telephone: profile.phone,
-    address: { "@type": "PostalAddress", addressLocality: "Charlotte", addressRegion: "NC" },
     sameAs: [profile.linkedin, profile.github],
     knowsAbout: capabilities.flatMap((c) => c.items),
     alumniOf: { "@type": "CollegeOrUniversity", name: "New England University" },
@@ -46,20 +45,18 @@ export default function Page() {
       {/* Full-text mirror of the scroll story, for crawlers and screen readers. */}
       <div className="sr-only" aria-label="Text version of this portfolio">
         <p>{profile.summary}</p>
-        {scenes.map((s) => (
+        {selectedProjects.map((s) => (
           <section key={s.id}>
             <h2>
-              {s.role} at {s.company}, {s.period}
+              {s.company}, {s.period}
             </h2>
-            <p>{s.lede}</p>
+            <p>{s.tagline}</p>
+            <p>{s.problem}</p>
             <ul>
-              {s.metrics.map((m) => (
+              {s.scaleMetrics.map((m) => (
                 <li key={m.label}>
                   {m.value} — {m.label}. {m.detail}
                 </li>
-              ))}
-              {s.bullets.map((b) => (
-                <li key={b}>{b}</li>
               ))}
             </ul>
           </section>
@@ -67,7 +64,7 @@ export default function Page() {
         <section>
           <h2>Contact</h2>
           <p>
-            {profile.fullName}, {profile.location}. Email {profile.email}. Phone {profile.phone}.
+            {profile.fullName}. Email {profile.email}. Phone {profile.phone}.
           </p>
         </section>
       </div>

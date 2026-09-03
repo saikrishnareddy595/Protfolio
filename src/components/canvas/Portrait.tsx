@@ -17,9 +17,9 @@ import { damp, envelope } from "@/lib/math";
  */
 
 export const PORTRAIT_CANDIDATES = [
-  "/avatar.png",
   "/avatar.jpg",
   "/avatar.jpeg",
+  "/avatar.png",
   "/avatar.webp",
   "/avatar.avif",
 ];
@@ -119,8 +119,9 @@ const FRAG = /* glsl */ `
     // Grade: cool the background down into the palette, keep the subject warm.
     float lum = dot(col, vec3(0.299, 0.587, 0.114));
     vec3 recede = mix(vec3(lum), uViolet * (0.35 + lum), 0.4) * 0.34;
-    float subject = smoothstep(0.72, 0.2, distance(vUv, uFocus));
-    col = mix(recede, col, clamp(subject + 0.1, 0.0, 1.0));
+    float subjectDist = length((vUv - uFocus) * vec2(1.1, 0.82));
+    float subject = smoothstep(0.76, 0.22, subjectDist);
+    col = mix(recede, col, clamp(subject + 0.18, 0.0, 1.0));
 
     // Vignette.
     float v = length((vUv - 0.5) * vec2(1.1, 1.0)) * 1.55;

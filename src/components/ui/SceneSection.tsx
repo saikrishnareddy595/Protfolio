@@ -2,15 +2,16 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import type { Scene } from "@/lib/content";
+import type { EngineeringProject } from "@/lib/content";
 import { GlassCard, Reveal, Tag } from "./primitives";
+import { ShieldAlert, Workflow, Scale } from "lucide-react";
 
 /**
  * One chapter of the scroll story. The pane is sticky for the full section, so
  * the copy holds still while the 3D scene behind it morphs; it cross-fades out
  * as the next chapter's 3D geometry takes over.
  */
-export function SceneSection({ scene, align }: { scene: Scene; align: "left" | "right" }) {
+export function SceneSection({ project, align }: { project: EngineeringProject; align: "left" | "right" }) {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -25,26 +26,24 @@ export function SceneSection({ scene, align }: { scene: Scene; align: "left" | "
   return (
     <section
       ref={ref}
-      id={scene.id}
+      id={project.id}
       className="relative"
       style={{ height: "220svh" }}
-      aria-label={`${scene.company} — ${scene.role}`}
+      aria-label={`${project.company} — ${project.title}`}
     >
       <div className="sticky top-0 h-[100svh] overflow-hidden">
         <motion.div
           style={{ opacity, y, filter }}
           className="mx-auto flex h-full max-w-[1400px] flex-col px-5 pb-5 pt-20 sm:px-8 sm:pb-8 sm:pt-24"
         >
-          {/* ---- Narrative column ----
-              flex-1 + min-h-0 means a short viewport clips the prose rather
-              than pushing the metric strip off the bottom of the screen. */}
+          {/* ---- Narrative column ---- */}
           <div
             className={`flex min-h-0 flex-1 overflow-hidden ${
               align === "right" ? "justify-end" : "justify-start"
             }`}
           >
-            <div className="relative max-w-xl">
-              {/* Keeps the copy legible wherever the 3D happens to be bright. */}
+            <div className="relative max-w-2xl flex flex-col justify-center">
+              {/* Radial gradient backing for legibility */}
               <div
                 aria-hidden
                 className="pointer-events-none absolute -inset-x-10 -inset-y-8 -z-10"
@@ -57,46 +56,71 @@ export function SceneSection({ scene, align }: { scene: Scene; align: "left" | "
 
               <div className="flex items-center gap-3">
                 <span className="font-mono text-[0.68rem] tracking-[0.2em] text-cyber-glow/80">
-                  {scene.index}
+                  SYSTEM {project.index}
                 </span>
                 <span className="h-px w-8 bg-white/20" />
-                <span className="eyebrow">{scene.eyebrow}</span>
+                <span className="eyebrow">{project.category}</span>
               </div>
 
-              <h2 className="display mt-5 text-[clamp(1.7rem,4.2vw,3.1rem)] text-white">
-                <span className="text-gradient">{scene.title}</span>
+              <h2 className="display mt-3 text-[clamp(1.5rem,3vw,2.5rem)] leading-tight text-white">
+                <span className="text-gradient">{project.title}</span>
               </h2>
 
-              <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.78rem] text-silver-dim">
-                <span className="font-medium text-white/90">{scene.company}</span>
-                <span className="text-white/20">/</span>
-                <span>{scene.role}</span>
+              <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.78rem] text-silver-dim">
+                <span className="font-medium text-white/90">{project.company}</span>
                 <span className="text-white/20">/</span>
                 <span className="font-mono text-[0.7rem] tracking-wide text-silver-faint">
-                  {scene.period}
+                  {project.period}
                 </span>
               </div>
 
-              <p className="pretty mt-4 text-[0.9rem] leading-relaxed text-silver-dim sm:text-[0.98rem]">
-                {scene.lede}
-              </p>
+              {/* Tagline */}
+              <div className="mt-4 rounded-lg border border-cyber/20 bg-cyber/[0.03] p-3.5 sm:p-4">
+                <div className="mt-1 font-display text-[0.98rem] text-white">
+                  {project.tagline}
+                </div>
+              </div>
 
-              <ul className="mt-5 hidden space-y-2 md:block">
-                {scene.bullets.slice(0, 3).map((b, i) => (
-                  <Reveal
-                    as="li"
-                    key={b}
-                    delay={i}
-                    className="flex gap-3 text-[0.82rem] leading-relaxed text-silver-dim/90"
-                  >
-                    <span aria-hidden className="mt-[0.55em] h-1 w-1 shrink-0 rounded-full bg-cyber/70" />
-                    <span className="pretty">{b}</span>
-                  </Reveal>
-                ))}
-              </ul>
+              {/* Architecture & Problem Scrollable Area if needed, or just concise text */}
+              <div className="mt-5 space-y-5">
+                <div>
+                  <div className="flex items-center gap-2 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-silver-faint">
+                    <ShieldAlert className="h-3.5 w-3.5 text-violet" />
+                    <span>The Problem</span>
+                  </div>
+                  <p className="pretty mt-2 text-[0.88rem] leading-relaxed text-silver-dim sm:text-[0.92rem]">
+                    {project.problem}
+                  </p>
+                </div>
+                
+                <div className="hidden sm:block">
+                   <div className="flex items-center gap-2 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-silver-faint">
+                    <Workflow className="h-3.5 w-3.5 text-cyber" />
+                    <span>Pipeline Architecture</span>
+                  </div>
+                  <ul className="mt-3 space-y-2.5">
+                    {project.architectureNodes.slice(0, 4).map((node, i) => (
+                      <Reveal
+                        as="li"
+                        key={node.id}
+                        delay={i}
+                        className="flex items-start gap-3 text-[0.82rem] leading-relaxed text-silver-dim"
+                      >
+                        <span className="mt-[0.1em] font-mono text-[0.65rem] text-cyber">0{i + 1}</span>
+                        <div>
+                          <span className="font-medium text-white/90">{node.name}</span>
+                          <span className="mx-2 text-white/20">·</span>
+                          <span className="font-mono text-[0.7rem] text-cyber-glow">{node.tech}</span>
+                          <p className="mt-0.5 text-[0.8rem] text-silver-faint line-clamp-1">{node.detail}</p>
+                        </div>
+                      </Reveal>
+                    ))}
+                  </ul>
+                </div>
+              </div>
 
-              <ul className="mt-5 flex flex-wrap gap-1.5">
-                {scene.stack.slice(0, 8).map((st) => (
+              <ul className="mt-6 flex flex-wrap gap-1.5">
+                {project.stack.slice(0, 8).map((st) => (
                   <Tag key={st}>{st}</Tag>
                 ))}
               </ul>
@@ -105,9 +129,9 @@ export function SceneSection({ scene, align }: { scene: Scene; align: "left" | "
 
           {/* ---- Metric strip ---- */}
           <div className="mt-5 grid shrink-0 grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-4">
-            {scene.metrics.map((m, i) => (
+            {project.scaleMetrics.map((m, i) => (
               <Reveal key={m.label} delay={i} className="h-full">
-                <GlassCard className="h-full px-4 py-3.5 sm:px-5 sm:py-4">
+                <GlassCard className="h-full px-4 py-3.5 sm:px-5 sm:py-4 border-white/5 bg-white/[0.02]">
                   <div className="font-display text-[clamp(1.1rem,2.4vw,1.75rem)] leading-none tracking-tightest text-white">
                     {m.value}
                   </div>
@@ -128,3 +152,4 @@ export function SceneSection({ scene, align }: { scene: Scene; align: "left" | "
 }
 
 export default SceneSection;
+

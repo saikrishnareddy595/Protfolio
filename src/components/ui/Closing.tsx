@@ -127,7 +127,7 @@ export function Closing() {
 
           <footer className="mt-16 flex flex-col gap-3 border-t border-white/[0.07] pt-6 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-silver-faint sm:flex-row sm:items-center sm:justify-between">
             <span>
-              {profile.location} · {profile.phone}
+              {profile.phone}
             </span>
             <span>
               © {new Date().getFullYear()} {profile.fullName}

@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { heroStats, profile } from "@/lib/content";
-import { StatusDot } from "./primitives";
+import { heroStats, profile, engineeringPillars } from "@/lib/content";
+import { StatusDot, GithubIcon, LinkedinIcon } from "./primitives";
+import { FileText, Mail, ArrowDown, Sparkles, Terminal } from "lucide-react";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -11,7 +12,7 @@ const line = {
   show: (i: number) => ({
     opacity: 1,
     y: "0em",
-    transition: { duration: 1.15, delay: 0.35 + i * 0.11, ease: EASE },
+    transition: { duration: 1.0, delay: 0.2 + i * 0.1, ease: EASE },
   }),
 };
 
@@ -19,53 +20,70 @@ export function Hero({ started }: { started: boolean }) {
   const animate = started ? "show" : "hidden";
 
   return (
-    <section id="hero" className="relative" style={{ height: "140svh" }}>
-      <div className="sticky top-0 flex h-[100svh] flex-col justify-between overflow-hidden px-5 pb-14 pt-24 sm:px-8 sm:pb-16">
-        {/* Top-left: who and what, kept small so the bust owns the frame. */}
+    <section id="hero" className="relative" style={{ minHeight: "135svh" }}>
+      <div className="sticky top-0 flex min-h-[100svh] flex-col justify-between overflow-hidden px-5 pb-12 pt-20 sm:px-8 sm:pb-14 sm:pt-24">
+        {/* Top bar: Recruiter status & rapid context */}
         <motion.div
           initial="hidden"
           animate={animate}
           variants={line}
           custom={0}
-          className="max-w-md"
+          className="flex flex-wrap items-center justify-between gap-3"
         >
-          <div className="flex items-center gap-2.5">
+          <div className="glass-soft flex items-center gap-2.5 rounded-full px-3.5 py-1.5 text-xs">
             <StatusDot />
-            <span className="eyebrow">Open to senior AI systems roles</span>
+            <span className="font-mono text-[0.68rem] tracking-[0.14em] uppercase text-white/90">
+              Open to AI Engineer & Forward Deployed Engineer roles
+            </span>
           </div>
         </motion.div>
 
-        {/* Scroll cue, pinned to the bottom of the sticky pane. */}
+        {/* Scroll cue, pinned at bottom */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: started ? 1 : 0 }}
-          transition={{ delay: 1.6, duration: 1 }}
-          className="pointer-events-none absolute inset-x-0 bottom-3 flex justify-center"
+          transition={{ delay: 1.4, duration: 0.8 }}
+          className="pointer-events-none absolute inset-x-0 bottom-2.5 z-20 flex justify-center"
         >
-          <span className="flex items-center gap-2 font-mono text-[0.6rem] uppercase tracking-[0.24em] text-silver-faint">
-            <span className="h-8 w-px overflow-hidden bg-white/[0.12]">
+          <a
+            href="#profile-snapshot"
+            className="pointer-events-auto flex items-center gap-2 rounded-full border border-white/10 bg-void/80 px-3 py-1 font-mono text-[0.6rem] uppercase tracking-[0.2em] text-silver-faint backdrop-blur-md transition-colors hover:text-cyber"
+          >
+            <span className="h-4 w-px overflow-hidden bg-white/[0.15]">
               <span className="block h-full w-full animate-scan bg-cyber" />
             </span>
-            Scroll to enter
-          </span>
+            Explore Systems <ArrowDown className="h-3 w-3" />
+          </a>
         </motion.div>
 
-        {/* Bottom: the masthead. */}
-        <div className="relative">
-          <div className="pointer-events-none absolute inset-x-[-2rem] bottom-[-4rem] top-[-8rem] bg-gradient-to-t from-void via-void/80 to-transparent" />
+        {/* Bottom Hero Content: The Recruiter-Optimized Masthead */}
+        <div className="relative mt-auto">
+          {/* Subtle gradient scrim to guarantee maximum typography legibility against the 3D canvas */}
+          <div className="pointer-events-none absolute inset-x-[-2rem] bottom-[-4rem] top-[-9rem] bg-gradient-to-t from-void via-void/90 to-transparent" />
 
           <div className="relative">
-            <motion.p
+            {/* Direct Role & Experience Badge */}
+            <motion.div
               initial="hidden"
               animate={animate}
               variants={line}
               custom={1}
-              className="eyebrow mb-4 sm:mb-6"
+              className="mb-3 flex flex-wrap items-center gap-2 sm:mb-4 sm:gap-3"
             >
-              {profile.role} — {profile.discipline}
-            </motion.p>
+              <span className="rounded border border-cyber/40 bg-cyber/10 px-2.5 py-1 font-mono text-[0.68rem] font-medium tracking-[0.16em] uppercase text-cyber">
+                5+ Years Experience
+              </span>
+              <span className="font-mono text-[0.72rem] tracking-wider text-silver-dim">
+                Senior Software Engineer
+              </span>
+              <span className="text-white/20">/</span>
+              <span className="font-mono text-[0.72rem] text-silver-faint">
+                AI Systems & Distributed Infrastructure
+              </span>
+            </motion.div>
 
-            <h1 className="display text-gradient text-[clamp(2.75rem,11.2vw,10.5rem)]">
+            {/* Candidate Name */}
+            <h1 className="display text-gradient text-[clamp(2.6rem,9vw,7.8rem)]">
               <span className="block overflow-hidden">
                 <motion.span initial="hidden" animate={animate} variants={line} custom={2} className="block">
                   Sai Krishna
@@ -77,38 +95,117 @@ export function Hero({ started }: { started: boolean }) {
                   animate={animate}
                   variants={line}
                   custom={3}
-                  className="block pl-[0.06em] text-white/45"
+                  className="block pl-[0.04em] text-white/50"
                 >
                   Reddy
                 </motion.span>
               </span>
             </h1>
 
-            <div className="mt-8 flex flex-col gap-8 border-t border-white/10 pt-6 lg:flex-row lg:items-end lg:justify-between lg:gap-16">
-              <motion.p
-                initial="hidden"
-                animate={animate}
-                variants={line}
-                custom={4}
-                className="pretty max-w-xl text-[0.95rem] leading-relaxed text-silver-dim sm:text-[1.02rem]"
-              >
-                {profile.summary}
-              </motion.p>
+            {/* Core 4 Pillars Grid - Immediate Recruiter Answers */}
+            <motion.div
+              initial="hidden"
+              animate={animate}
+              variants={line}
+              custom={4}
+              className="mt-4 flex flex-wrap items-center gap-2 font-mono text-[0.68rem] tracking-wide text-silver-dim sm:mt-5"
+            >
+              <span className="text-silver-faint uppercase tracking-widest text-[0.62rem]">Core Focus:</span>
+              {engineeringPillars.map((p) => (
+                <a
+                  key={p.id}
+                  href="#profile-snapshot"
+                  className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 transition-colors hover:border-cyber/50 hover:bg-cyber/10 hover:text-white"
+                >
+                  {p.title}
+                </a>
+              ))}
+            </motion.div>
 
+            {/* Actions & Recruiter Summary Row */}
+            <div className="mt-6 flex flex-col gap-6 border-t border-white/10 pt-5 lg:flex-row lg:items-end lg:justify-between lg:gap-12">
+              <div className="max-w-2xl space-y-4">
+                <motion.p
+                  initial="hidden"
+                  animate={animate}
+                  variants={line}
+                  custom={5}
+                  className="pretty text-[0.92rem] leading-relaxed text-silver-dim sm:text-[0.98rem]"
+                >
+                  {profile.summary}
+                </motion.p>
+
+                {/* Direct High-Visibility Recruiter CTAs */}
+                <motion.div
+                  initial="hidden"
+                  animate={animate}
+                  variants={line}
+                  custom={6}
+                  className="flex flex-wrap items-center gap-2.5 pt-1"
+                >
+                  <a
+                    href={profile.resume}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group flex items-center gap-2 rounded-full border border-cyber/50 bg-cyber/15 px-5 py-2.5 font-mono text-[0.72rem] font-medium uppercase tracking-[0.16em] text-cyber transition-all duration-300 hover:bg-cyber hover:text-void hover:shadow-[0_0_24px_rgba(76,201,255,0.4)]"
+                  >
+                    <FileText className="h-4 w-4" />
+                    <span>View Résumé</span>
+                  </a>
+
+                  <a
+                    href={profile.github}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="glass-soft flex items-center gap-2 rounded-full px-4 py-2.5 font-mono text-[0.72rem] uppercase tracking-[0.14em] text-white transition-colors duration-300 hover:border-white/30 hover:bg-white/10"
+                  >
+                    <GithubIcon className="h-4 w-4 text-silver-dim" />
+                    <span>GitHub</span>
+                  </a>
+
+                  <a
+                    href={profile.linkedin}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="glass-soft flex items-center gap-2 rounded-full px-4 py-2.5 font-mono text-[0.72rem] uppercase tracking-[0.14em] text-white transition-colors duration-300 hover:border-white/30 hover:bg-white/10"
+                  >
+                    <LinkedinIcon className="h-4 w-4 text-silver-dim" />
+                    <span>LinkedIn</span>
+                  </a>
+
+                  <a
+                    href={`mailto:${profile.email}`}
+                    className="glass-soft flex items-center gap-2 rounded-full px-4 py-2.5 font-mono text-[0.72rem] uppercase tracking-[0.14em] text-silver-dim transition-colors duration-300 hover:text-white hover:border-white/30"
+                  >
+                    <Mail className="h-4 w-4" />
+                    <span>Contact</span>
+                  </a>
+
+                  <a
+                    href="#projects"
+                    className="glass-soft hidden items-center gap-1.5 rounded-full px-3.5 py-2.5 font-mono text-[0.7rem] uppercase tracking-[0.12em] text-violet transition-colors hover:text-white sm:inline-flex"
+                  >
+                    <Sparkles className="h-3.5 w-3.5" />
+                    <span>Selected Projects</span>
+                  </a>
+                </motion.div>
+              </div>
+
+              {/* Quantified Production Metrics */}
               <motion.dl
                 initial="hidden"
                 animate={animate}
                 variants={line}
-                custom={5}
-                className="grid shrink-0 grid-cols-3 gap-x-5 gap-y-1 sm:gap-x-10"
+                custom={7}
+                className="grid shrink-0 grid-cols-3 gap-x-5 gap-y-1 sm:gap-x-8"
               >
                 {heroStats.map((s) => (
                   <div key={s.label}>
                     <dt className="sr-only">{s.label}</dt>
-                    <dd className="font-display text-[clamp(1.15rem,3vw,1.9rem)] leading-none tracking-tightest text-white">
+                    <dd className="font-display text-[clamp(1.15rem,2.5vw,1.85rem)] leading-none tracking-tightest text-white">
                       {s.value}
                     </dd>
-                    <p className="mt-2 font-mono text-[0.6rem] uppercase leading-tight tracking-[0.14em] text-silver-faint">
+                    <p className="mt-2 font-mono text-[0.58rem] uppercase leading-tight tracking-[0.14em] text-silver-faint">
                       {s.label}
                     </p>
                   </div>

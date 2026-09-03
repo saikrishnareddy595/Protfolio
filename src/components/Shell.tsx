@@ -8,9 +8,10 @@ import Nav from "./ui/Nav";
 import ScrollRail from "./ui/ScrollRail";
 import Loader from "./ui/Loader";
 import Hero from "./ui/Hero";
+import RecruiterBrief from "./ui/RecruiterBrief";
 import SceneSection from "./ui/SceneSection";
 import Closing from "./ui/Closing";
-import { scenes } from "@/lib/content";
+import { selectedProjects } from "@/lib/content";
 
 // The WebGL layer never renders on the server: it has no meaningful HTML output
 // and shipping it into the SSR pass would only delay first paint of the copy.
@@ -99,9 +100,10 @@ export function Shell() {
       {/* ---- The HTML story ---- */}
       <main className="relative z-10">
         <Hero started={started} />
-        <SceneSection scene={scenes[0]} align="left" />
-        <SceneSection scene={scenes[1]} align="right" />
-        <SceneSection scene={scenes[2]} align="left" />
+        <RecruiterBrief />
+        {selectedProjects.map((project, i) => (
+          <SceneSection key={project.id} project={project} align={i % 2 === 0 ? "left" : "right"} />
+        ))}
         <Closing />
       </main>
     </>
