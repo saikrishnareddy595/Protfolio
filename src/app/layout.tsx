@@ -1,81 +1,83 @@
-import type { Metadata } from "next";
-import { Inter, JetBrains_Mono, Sora } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import { profile } from "@/lib/content";
 import "./globals.css";
-import { Navbar } from "@/components/navbar";
-import { Footer } from "@/components/footer";
-import { AnimatedShell } from "@/components/animated-shell";
-import { ScrollProgress } from "@/components/ScrollProgress";
-import { siteConfig } from "@/config/site";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-body" });
-const sora = Sora({ subsets: ["latin"], variable: "--font-heading" });
-const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" });
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-space-grotesk",
+  display: "swap",
+});
+
+const jetbrains = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-jetbrains",
+  display: "swap",
+});
+
+const siteUrl = "https://saikrishnareddy.vercel.app";
+const description = `${profile.summary} Currently building a multi-agent LangGraph diagnostic system running 8,000+ autonomous investigations per day over a 50M+ endpoint network.`;
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteConfig.url),
+  metadataBase: new URL(siteUrl),
   title: {
-    default: siteConfig.title,
-    template: `%s — Portfolio`,
+    default: `${profile.fullName} — ${profile.role}, AI Systems`,
+    template: `%s — ${profile.fullName}`,
   },
-  description: siteConfig.description,
-  alternates: { canonical: "/" },
+  description,
+  keywords: [
+    "AI Systems Engineer",
+    "LangGraph",
+    "Multi-agent systems",
+    "MCP",
+    "Apache Kafka",
+    "Distributed systems",
+    "Kubernetes",
+    "Go",
+    "Python",
+    "Sai Krishna Reddy",
+  ],
+  authors: [{ name: profile.fullName }],
+  creator: profile.fullName,
   openGraph: {
     type: "website",
-    locale: "en_US",
-    url: siteConfig.url,
-    siteName: siteConfig.name,
-    title: siteConfig.title,
-    description: siteConfig.description,
-    images: [siteConfig.ogImage],
+    url: siteUrl,
+    title: `${profile.fullName} — ${profile.role}`,
+    description,
+    siteName: profile.fullName,
   },
   twitter: {
     card: "summary_large_image",
-    title: siteConfig.title,
-    description: siteConfig.description,
-    images: [siteConfig.ogImage],
+    title: `${profile.fullName} — ${profile.role}`,
+    description,
   },
+  robots: { index: true, follow: true },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
-  return (
-    <html lang="en" className={`${inter.variable} ${sora.variable} ${jetbrainsMono.variable}`}>
-      <body className="min-h-screen bg-[#030308] font-body text-zinc-100 antialiased">
-        {/* Deep space gradient background */}
-        <div
-          className="pointer-events-none fixed inset-0 -z-30"
-          style={{
-            background:
-              "radial-gradient(ellipse 90% 60% at 50% -10%, rgba(129,140,248,0.13) 0%, transparent 70%)",
-          }}
-        />
-        <div
-          className="pointer-events-none fixed inset-0 -z-30"
-          style={{
-            background:
-              "radial-gradient(ellipse 50% 40% at 85% 85%, rgba(34,211,238,0.06) 0%, transparent 55%)",
-          }}
-        />
-        <div
-          className="pointer-events-none fixed inset-0 -z-30"
-          style={{
-            background:
-              "radial-gradient(ellipse 40% 30% at 10% 70%, rgba(167,139,250,0.06) 0%, transparent 60%)",
-          }}
-        />
-        {/* Subtle dot grid */}
-        <div className="dot-pattern pointer-events-none fixed inset-0 -z-20" />
-        {/* Film grain */}
-        <div className="noise-overlay pointer-events-none fixed inset-0 -z-10" />
+export const viewport: Viewport = {
+  themeColor: "#050505",
+  colorScheme: "dark",
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
 
-        <ScrollProgress />
-        <Navbar />
-        <main>
-          <AnimatedShell>{children}</AnimatedShell>
-        </main>
-        <Footer />
-      </body>
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html
+      lang="en"
+      className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrains.variable}`}
+      suppressHydrationWarning
+    >
+      <body className="bg-void text-silver antialiased">{children}</body>
     </html>
   );
 }

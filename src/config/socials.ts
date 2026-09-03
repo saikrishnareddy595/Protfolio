@@ -1,5 +1,0 @@
-export const socials = {
-  LinkedIn: "https://www.linkedin.com/in/reddy4725/",
-  GitHub: "https://github.com/saikrishnareddy595",
-  Email: "mailto:reddamgufus21188@gmail.com"
-} as const;
