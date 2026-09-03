@@ -97,6 +97,7 @@ export const SECTION_VH = {
  */
 export const TIMELINE_STOPS = [
   { id: "hero", t: 0 },
+  { id: "profile-snapshot", t: 0.04 },
   { id: "spectrum", t: 140 / 860 },
   { id: "capital-one", t: 360 / 860 },
   { id: "teradata", t: 580 / 860 },

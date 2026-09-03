@@ -21,7 +21,8 @@ export function Nav({
   // in React, no re-render unless the chapter actually changes.
   useEffect(() => {
     const bounds: [string, number, number][] = [
-      ["hero", 0, 0.155],
+      ["hero", 0, 0.035],
+      ["profile-snapshot", 0.035, 0.155],
       ["spectrum", 0.155, 0.41],
       ["capital-one", 0.41, 0.665],
       ["teradata", 0.665, 0.925],
@@ -55,9 +56,6 @@ export function Nav({
         >
           <StatusDot />
           <span className="font-mono text-[0.7rem] tracking-[0.14em] text-white/90">SKR</span>
-          <span className="hidden text-[0.72rem] text-silver-faint sm:inline">
-            {profile.location}
-          </span>
         </a>
 
         <div className="flex items-center gap-2">
