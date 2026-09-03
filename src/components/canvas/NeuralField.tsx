@@ -193,7 +193,7 @@ export function NeuralField() {
     const p = scroll.progress;
 
     // Lives across the hero and hands over to the agent graph.
-    const target = envelope(p, -0.05, 0.02, 0.26, 0.4);
+    const target = envelope(p, -0.05, 0.02, 0.3, 0.42);
     fade.current = damp(fade.current, target, 6, d);
 
     const u = matRef.current?.uniforms;

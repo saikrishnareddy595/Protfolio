@@ -112,6 +112,8 @@ export type ArchitectureStep = {
 export type EngineeringProject = {
   id: string;
   index: string;
+  /** Short label for the nav, the scroll rail and the chapter list. */
+  navLabel: string;
   title: string;
   tagline: string;
   category: string;
@@ -130,6 +132,7 @@ export type EngineeringProject = {
 export const selectedProjects: EngineeringProject[] = [
   {
     id: "autonomous-diagnostic-mesh",
+    navLabel: "Agents",
     index: "01",
     title: "Autonomous Network Incident Diagnostic System",
     tagline: "LangGraph Multi-Agent Mesh with MCP Tools Running 8,000+ Autonomous Investigations / Day Across 50M+ Endpoints",
@@ -233,6 +236,7 @@ export const selectedProjects: EngineeringProject[] = [
   },
   {
     id: "fraud-event-streaming",
+    navLabel: "Streaming",
     index: "02",
     title: "Real-Time Payment Event Processing & Fraud Intelligence Engine",
     tagline: "Idempotent Event Streaming Pipeline Processing 3M+ Events/Day with Sub-200ms p95 Latency",
@@ -330,6 +334,7 @@ export const selectedProjects: EngineeringProject[] = [
   },
   {
     id: "cloud-control-plane",
+    navLabel: "Control Plane",
     index: "03",
     title: "Multi-Tenant Cloud Control Plane & Self-Healing Database Provisioner",
     tagline: "Automated Go Control Plane Managing 1,500+ Multi-Tenant Database Clusters Across AWS & Azure",
@@ -514,11 +519,24 @@ export const credentials = [
 ] as const;
 
 /** Section anchors, in scroll order — used by the nav and the scroll rail. */
-export const chapters = [
-  { id: "hero", label: "Intro" },
-  { id: "profile-snapshot", label: "Profile" },
-  { id: "spectrum", label: "Agents" },
-  { id: "capital-one", label: "Streaming" },
-  { id: "teradata", label: "Control Plane" },
-  { id: "contact", label: "Contact" },
-] as const;
+/**
+ * Section anchors in scroll order, each pinned to a point on the 0 → 1 3D
+ * timeline. Derived from `selectedProjects` rather than hand-listed: the nav,
+ * the scroll rail and the 3D scene bands all read this, so a renamed project
+ * id can no longer desync them from each other.
+ */
+const PROJECT_STOPS = [0.19, 0.43, 0.67];
+
+export type Chapter = { id: string; label: string; t: number };
+
+export const chapters: Chapter[] = [
+  { id: "hero", label: "Intro", t: 0 },
+  { id: "profile-snapshot", label: "Profile", t: 0.1 },
+  ...selectedProjects.map((project, i) => ({
+    id: project.id,
+    label: project.navLabel,
+    // Evenly spread any project beyond the three the timeline was tuned for.
+    t: PROJECT_STOPS[i] ?? 0.1 + ((i + 1) / (selectedProjects.length + 1)) * 0.82,
+  })),
+  { id: "contact", label: "Contact", t: 0.92 },
+];

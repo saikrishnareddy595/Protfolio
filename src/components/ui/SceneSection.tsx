@@ -34,7 +34,7 @@ export function SceneSection({ project, align }: { project: EngineeringProject; 
       <div className="sticky top-0 h-[100svh] overflow-hidden">
         <motion.div
           style={{ opacity, y, filter }}
-          className="mx-auto flex h-full max-w-[1400px] flex-col px-5 pb-5 pt-20 sm:px-8 sm:pb-8 sm:pt-24"
+          className="mx-auto flex h-full max-w-[1400px] flex-col px-5 pb-5 pt-20 short:pt-16 sm:px-8 sm:pb-8 sm:pt-24"
         >
           {/* ---- Narrative column ---- */}
           <div
@@ -62,7 +62,7 @@ export function SceneSection({ project, align }: { project: EngineeringProject; 
                 <span className="eyebrow">{project.category}</span>
               </div>
 
-              <h2 className="display mt-3 text-[clamp(1.5rem,3vw,2.5rem)] leading-tight text-white">
+              <h2 className="display mt-3 text-[clamp(1.5rem,3vw,2.5rem)] leading-tight text-white short:mt-2 short:text-[clamp(1.35rem,2.4vw,1.9rem)]">
                 <span className="text-gradient">{project.title}</span>
               </h2>
 
@@ -75,14 +75,14 @@ export function SceneSection({ project, align }: { project: EngineeringProject; 
               </div>
 
               {/* Tagline */}
-              <div className="mt-4 rounded-lg border border-cyber/20 bg-cyber/[0.03] p-3.5 sm:p-4">
+              <div className="mt-4 rounded-lg border border-cyber/20 bg-cyber/[0.03] p-3.5 short:mt-3 short:p-3 sm:p-4">
                 <div className="mt-1 font-display text-[0.98rem] text-white">
                   {project.tagline}
                 </div>
               </div>
 
               {/* Architecture & Problem Scrollable Area if needed, or just concise text */}
-              <div className="mt-5 space-y-5">
+              <div className="mt-5 space-y-5 short:mt-3 short:space-y-3">
                 <div>
                   <div className="flex items-center gap-2 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-silver-faint">
                     <ShieldAlert className="h-3.5 w-3.5 text-violet" />
@@ -93,7 +93,7 @@ export function SceneSection({ project, align }: { project: EngineeringProject; 
                   </p>
                 </div>
                 
-                <div className="hidden sm:block">
+                <div className="hidden sm:block short:hidden">
                    <div className="flex items-center gap-2 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-silver-faint">
                     <Workflow className="h-3.5 w-3.5 text-cyber" />
                     <span>Pipeline Architecture</span>
@@ -119,7 +119,7 @@ export function SceneSection({ project, align }: { project: EngineeringProject; 
                 </div>
               </div>
 
-              <ul className="mt-6 flex flex-wrap gap-1.5">
+              <ul className="mt-6 flex flex-wrap gap-1.5 short:mt-4">
                 {project.stack.slice(0, 8).map((st) => (
                   <Tag key={st}>{st}</Tag>
                 ))}
@@ -128,10 +128,10 @@ export function SceneSection({ project, align }: { project: EngineeringProject; 
           </div>
 
           {/* ---- Metric strip ---- */}
-          <div className="mt-5 grid shrink-0 grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-4">
+          <div className="mt-5 grid shrink-0 grid-cols-2 gap-2.5 short:mt-3 short:gap-2 sm:gap-3 lg:grid-cols-4">
             {project.scaleMetrics.map((m, i) => (
               <Reveal key={m.label} delay={i} className="h-full">
-                <GlassCard className="h-full px-4 py-3.5 sm:px-5 sm:py-4 border-white/5 bg-white/[0.02]">
+                <GlassCard className="h-full border-white/5 bg-white/[0.02] px-4 py-3.5 short:px-3 short:py-2.5 sm:px-5 sm:py-4">
                   <div className="font-display text-[clamp(1.1rem,2.4vw,1.75rem)] leading-none tracking-tightest text-white">
                     {m.value}
                   </div>

@@ -4,6 +4,13 @@ const config: Config = {
   content: ["./src/**/*.{ts,tsx,mdx}"],
   theme: {
     extend: {
+      // Height-based breakpoints. The scroll story pins panes to the viewport,
+      // so short laptops (1366x768, 1280x720) need the same care as narrow
+      // phones — width alone doesn't tell you whether the content fits.
+      screens: {
+        short: { raw: "(max-height: 800px)" },
+        shorter: { raw: "(max-height: 680px)" },
+      },
       colors: {
         void: {
           DEFAULT: "#050505",
