@@ -2,336 +2,169 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  color-scheme: dark;
-}
+@layer base {
+  :root {
+    --font-sans: var(--font-inter);
+    --font-display: var(--font-space-grotesk);
+    --font-mono: var(--font-jetbrains);
 
-html {
-  scroll-behavior: smooth;
-}
+    --void: #050505;
+    --cyber: #4cc9ff;
+    --violet: #a06bff;
 
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  line-height: 1.5;
-  overflow-x: hidden;
-}
-
-.font-body {
-  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
-}
-
-.font-heading {
-  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
-}
-
-.font-mono {
-  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
-}
-
-/* ── Noise overlay ──────────────────────────── */
-.noise-overlay {
-  opacity: 0.03;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 200px 200px;
-}
-
-/* ── Dot grid pattern ────────────────────────── */
-.dot-pattern {
-  background-image: radial-gradient(circle, rgba(129, 140, 248, 0.1) 1px, transparent 1px);
-  background-size: 32px 32px;
-}
-
-/* ── Gradient text utilities ─────────────────── */
-.gradient-text {
-  background: linear-gradient(135deg, #c7d2fe 0%, #a78bfa 40%, #818cf8 70%, #22d3ee 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.gradient-text-gold {
-  background: linear-gradient(135deg, #fde68a 0%, #f59e0b 50%, #fbbf24 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.gradient-text-cyan {
-  background: linear-gradient(135deg, #a5f3fc 0%, #22d3ee 60%, #818cf8 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* ── Card glow border on hover ──────────────── */
-.card-hover-glow {
-  position: relative;
-  isolation: isolate;
-  transition: box-shadow 0.3s ease, border-color 0.3s ease;
-}
-
-.card-hover-glow:hover {
-  box-shadow:
-    0 24px 60px rgba(0, 0, 0, 0.55),
-    0 0 30px rgba(129, 140, 248, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
-}
-
-/* ── Timeline animated line ──────────────────── */
-@keyframes draw-line {
-  from { transform: scaleY(0); transform-origin: top; }
-  to   { transform: scaleY(1); transform-origin: top; }
-}
-
-.timeline-line-animate {
-  animation: draw-line 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.3s forwards;
-  transform: scaleY(0);
-  transform-origin: top;
-}
-
-/* ── Floating orb animations ─────────────────── */
-@keyframes orb-drift-1 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33%      { transform: translate(40px, -30px) scale(1.05); }
-  66%      { transform: translate(-20px, 20px) scale(0.97); }
-}
-
-@keyframes orb-drift-2 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33%      { transform: translate(-30px, 25px) scale(0.95); }
-  66%      { transform: translate(25px, -20px) scale(1.04); }
-}
-
-@keyframes orb-drift-3 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50%      { transform: translate(20px, -35px) scale(1.06); }
-}
-
-.animate-orb-1 { animation: orb-drift-1 14s ease-in-out infinite; }
-.animate-orb-2 { animation: orb-drift-2 18s ease-in-out infinite; }
-.animate-orb-3 { animation: orb-drift-3 11s ease-in-out infinite; }
-
-/* ── Shimmer on button ───────────────────────── */
-@keyframes shimmer-slide {
-  0%   { transform: translateX(-150%) skewX(-12deg); }
-  100% { transform: translateX(250%) skewX(-12deg); }
-}
-
-.btn-shimmer {
-  position: absolute;
-  inset-y: 0;
-  width: 40%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
-  animation: shimmer-slide 3s infinite;
-}
-
-/* ── Status badge pulse ──────────────────────── */
-@keyframes status-pulse-ring {
-  0%   { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.4); }
-  70%  { box-shadow: 0 0 0 8px rgba(74, 222, 128, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
-}
-
-.status-dot {
-  animation: status-pulse-ring 2s ease-in-out infinite;
-}
-
-/* ── Scrollbar hide ──────────────────────────── */
-.no-scrollbar::-webkit-scrollbar { display: none; }
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-/* ── Transitions ─────────────────────────────── */
-a,
-button,
-input,
-textarea {
-  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-a:focus-visible,
-button:focus-visible,
-input:focus-visible,
-textarea:focus-visible {
-  outline: 2px solid #818cf8;
-  outline-offset: 2px;
-}
-
-/* ── Terminal cursor blink ───────────────────── */
-@keyframes terminal-cursor-blink {
-  0%, 49% { opacity: 1; }
-  50%, 100% { opacity: 0; }
-}
-
-.terminal-cursor {
-  display: inline-block;
-  width: 6px;
-  height: 13px;
-  background-color: #818cf8;
-  animation: terminal-cursor-blink 1s step-end infinite;
-  vertical-align: middle;
-  border-radius: 1px;
-  margin-left: 1px;
-}
-
-/* ── Hex scanline (CRT effect on skill cards) ── */
-@keyframes scan-sweep {
-  0%   { top: -2px;  opacity: 0; }
-  4%   { opacity: 0.6; }
-  96%  { opacity: 0.6; }
-  100% { top: 100%; opacity: 0; }
-}
-
-.scanline-effect {
-  position: relative;
-  overflow: hidden;
-}
-
-.scanline-effect::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(129, 140, 248, 0.22) 30%,
-    rgba(129, 140, 248, 0.22) 70%,
-    transparent 100%
-  );
-  animation: scan-sweep 9s linear infinite;
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* ── Hex glitch (for decorative labels) ─────── */
-@keyframes hex-glitch {
-  0%, 91%, 100% { opacity: 1; transform: none; }
-  92%           { opacity: 0.4; transform: translateX(-2px) skewX(-1deg); }
-  94%           { opacity: 0.8; transform: translateX(2px) skewX(0.5deg); }
-  96%           { opacity: 0.5; transform: translateX(-1px); }
-}
-
-.hex-glitch { animation: hex-glitch 9s ease-in-out infinite; }
-
-/* ── Binary column rain (decorative background) */
-@keyframes binary-col {
-  0%   { transform: translateY(-110%); opacity: 0; }
-  6%   { opacity: 0.45; }
-  94%  { opacity: 0.45; }
-  100% { transform: translateY(110vh); opacity: 0; }
-}
-
-/* ── Packet pulse (pipeline connector dots) ──── */
-@keyframes packet-pulse {
-  0%, 100% { opacity: 0.3; transform: scale(0.8); }
-  50%       { opacity: 1;   transform: scale(1.2); }
-}
-
-/* ── Skill card "git blame" style annotation ─── */
-.git-blame-line::before {
-  content: attr(data-hash);
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 8px;
-  color: rgba(129, 140, 248, 0.15);
-  letter-spacing: 0.08em;
-  margin-right: 8px;
-  user-select: none;
-}
-
-/* ── System resource bar animation ─────────────── */
-@keyframes cpu-load {
-  0%   { width: 62%; }
-  25%  { width: 78%; }
-  50%  { width: 55%; }
-  75%  { width: 89%; }
-  100% { width: 62%; }
-}
-
-@keyframes mem-load {
-  0%   { width: 71%; }
-  33%  { width: 68%; }
-  66%  { width: 80%; }
-  100% { width: 71%; }
-}
-
-.animate-cpu-load { animation: cpu-load 7s ease-in-out infinite; }
-.animate-mem-load { animation: mem-load 10s ease-in-out infinite; }
-
-/* ── AI Chat typing bounce ───────────────────── */
-@keyframes typing-bounce {
-  0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
-  30%            { transform: translateY(-5px); opacity: 1; }
-}
-
-/* ── AI Skills shimmer hover ─────────────────── */
-@keyframes ai-shimmer {
-  0%   { background-position: 200% center; }
-  100% { background-position: -200% center; }
-}
-
-.ai-skill-shimmer {
-  background: linear-gradient(
-    90deg,
-    rgba(124,58,237,0.12) 0%,
-    rgba(124,58,237,0.22) 25%,
-    rgba(6,182,212,0.22)  50%,
-    rgba(124,58,237,0.22) 75%,
-    rgba(124,58,237,0.12) 100%
-  );
-  background-size: 200% auto;
-  transition: background-position 0.6s ease;
-}
-
-.ai-skill-shimmer:hover {
-  animation: ai-shimmer 1.4s linear infinite;
-}
-
-/* ── Currently Building pulse ────────────────── */
-@keyframes live-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(6,182,212,0.5); }
-  50%       { box-shadow: 0 0 0 6px rgba(6,182,212,0); }
-}
-
-.live-pulse-dot {
-  animation: live-pulse 2s ease-in-out infinite;
-}
-
-/* ── Gradient border shimmer ─────────────────── */
-@keyframes border-shimmer {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-/* ── Count-up number glow ────────────────────── */
-@keyframes number-glow {
-  0%, 100% { text-shadow: 0 0 10px rgba(129,140,248,0.3); }
-  50%       { text-shadow: 0 0 25px rgba(129,140,248,0.6), 0 0 50px rgba(129,140,248,0.2); }
-}
-
-.stat-number-glow {
-  animation: number-glow 3s ease-in-out infinite;
-}
-
-/* ── Reduced motion ──────────────────────────── */
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
+    color-scheme: dark;
   }
 
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    scroll-behavior: auto;
+    background-color: var(--void);
+  }
+
+  body {
+    background-color: var(--void);
+    color: #e8eaf0;
+    font-family: var(--font-sans), system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: rgba(76, 201, 255, 0.28);
+    color: #ffffff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--cyber);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* A thin, unobtrusive scrollbar keeps the dark canvas uninterrupted. */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #050505;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1e1e26;
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #2a2a34;
+  }
+}
+
+@layer components {
+  /* ---- Glassmorphism -------------------------------------------------- */
+  .glass {
+    background: linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.055) 0%,
+      rgba(255, 255, 255, 0.018) 45%,
+      rgba(255, 255, 255, 0.008) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    backdrop-filter: blur(22px) saturate(140%);
+    -webkit-backdrop-filter: blur(22px) saturate(140%);
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.06) inset,
+      0 24px 60px -28px rgba(0, 0, 0, 0.9);
+  }
+
+  .glass-soft {
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(14px) saturate(130%);
+    -webkit-backdrop-filter: blur(14px) saturate(130%);
+  }
+
+  /* ---- Typography ----------------------------------------------------- */
+  .display {
+    font-family: var(--font-display), var(--font-sans), sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    line-height: 0.92;
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(154, 160, 174, 0.9);
+  }
+
+  .text-gradient {
+    background: linear-gradient(100deg, #ffffff 0%, #dfe6f2 38%, #9aa9c4 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .text-accent-gradient {
+    background: linear-gradient(100deg, #8ee4ff 0%, #a06bff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* ---- Decoration ----------------------------------------------------- */
+  .hairline {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.16) 22%,
+      rgba(255, 255, 255, 0.16) 78%,
+      transparent
+    );
+  }
+
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .edge-fade-b {
+    -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+  }
+}
+
+@layer utilities {
+  .stroke-text {
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.22);
+    color: transparent;
+  }
+
+  .balance {
+    text-wrap: balance;
+  }
+
+  .pretty {
+    text-wrap: pretty;
+  }
+}
+
+/* Respect the OS setting: no scroll-jacked 3D, no long transitions. */
+@media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
-    animation: none !important;
-    transition-duration: 0.01ms !important;
-    transition-delay: 0ms !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
   }
 }
