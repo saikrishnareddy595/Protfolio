@@ -7,14 +7,22 @@ import { scroll, SCENE_Z, TIMELINE } from "@/lib/scroll";
 import { damp, envelope } from "@/lib/math";
 
 /**
- * The hero subject: the supplied avatar portrait, rendered in the 3D scene as a
- * floating glass slab rather than a flat <img>. It bows slightly toward the
- * camera, tracks the pointer with a 2.5D parallax offset between subject and
- * background, and is graded into the site palette so it belongs in the void.
+ * The hero subject: the avatar rendered as actual 3D geometry, not a picture
+ * on a card.
  *
- * Drop the artwork at `public/avatar.png` (or .jpg / .webp / .avif) — the first
- * candidate that loads wins. If none is present the abstract neural core in
- * `Avatar.tsx` is used instead — a wrong face is worse than no face.
+ * A dense plane is displaced along Z in the vertex shader by a baked depth map
+ * (`scripts/build-portrait-depth.py`), so the face physically stands out from
+ * the chest and the room behind is cut away entirely — there is no rectangle.
+ * Surface normals are derived from the same map by finite differences, which
+ * gives it real diffuse shading and a rim light that travels across the form
+ * as the bust turns with the pointer. Turning it is what proves it is a solid:
+ * the silhouette changes.
+ *
+ * As the hero scrolls away the vertices scatter along their own normals into
+ * the neural field rather than cross-fading out.
+ *
+ * Artwork lives at `public/avatar.*`; the depth/mask companion is
+ * `public/avatar-depth.png` (R = depth, G = subject mask).
  */
 
 export const PORTRAIT_CANDIDATES = [
@@ -25,183 +33,244 @@ export const PORTRAIT_CANDIDATES = [
   "/avatar.avif",
 ];
 
+const DEPTH_MAP = "/avatar-depth.png";
+
 export type PortraitState = "loading" | "ready" | "missing";
 
-/** Tries each candidate path in order; resolves with the first that decodes. */
+function loadTexture(url: string): Promise<THREE.Texture | null> {
+  return new Promise((resolve) => {
+    new THREE.TextureLoader().load(
+      url,
+      (tex) => resolve(tex),
+      undefined,
+      () => resolve(null)
+    );
+  });
+}
+
+/** Loads the artwork (first candidate that decodes) plus its depth companion. */
 export function usePortraitTexture(urls: string[] = PORTRAIT_CANDIDATES) {
   const [texture, setTexture] = useState<THREE.Texture | null>(null);
+  const [depth, setDepth] = useState<THREE.Texture | null>(null);
   const [state, setState] = useState<PortraitState>("loading");
 
   useEffect(() => {
     let cancelled = false;
-    const loader = new THREE.TextureLoader();
 
-    const attempt = (i: number) => {
-      if (cancelled) return;
-      if (i >= urls.length) {
+    (async () => {
+      let colour: THREE.Texture | null = null;
+      for (const url of urls) {
+        colour = await loadTexture(url);
+        if (colour) break;
+      }
+      if (cancelled) {
+        colour?.dispose();
+        return;
+      }
+      if (!colour) {
         setState("missing");
         return;
       }
-      loader.load(
-        urls[i],
-        (tex) => {
-          if (cancelled) {
-            tex.dispose();
-            return;
-          }
-          tex.colorSpace = THREE.SRGBColorSpace;
-          tex.anisotropy = 8;
-          tex.minFilter = THREE.LinearMipmapLinearFilter;
-          tex.magFilter = THREE.LinearFilter;
-          tex.generateMipmaps = true;
-          tex.needsUpdate = true;
-          setTexture(tex);
-          setState("ready");
-        },
-        undefined,
-        () => attempt(i + 1)
-      );
-    };
 
-    attempt(0);
+      colour.colorSpace = THREE.SRGBColorSpace;
+      colour.anisotropy = 8;
+      colour.minFilter = THREE.LinearMipmapLinearFilter;
+      colour.magFilter = THREE.LinearFilter;
+      colour.needsUpdate = true;
+
+      const relief = await loadTexture(DEPTH_MAP);
+      if (cancelled) {
+        colour.dispose();
+        relief?.dispose();
+        return;
+      }
+      if (relief) {
+        // Depth and mask are data, not colour — no sRGB decode, and no
+        // mipmaps, which would bleed the background into the silhouette.
+        relief.colorSpace = THREE.NoColorSpace;
+        relief.minFilter = THREE.LinearFilter;
+        relief.magFilter = THREE.LinearFilter;
+        relief.generateMipmaps = false;
+        relief.wrapS = relief.wrapT = THREE.ClampToEdgeWrapping;
+        relief.needsUpdate = true;
+      }
+
+      setTexture(colour);
+      setDepth(relief);
+      setState("ready");
+    })();
+
     return () => {
       cancelled = true;
     };
   }, [urls]);
 
-  return { texture, state };
+  return { texture, depth, state };
 }
 
 const VERT = /* glsl */ `
-  uniform float uBow;
+  uniform sampler2D uDepth;
+  uniform vec2 uTexel;
+  uniform float uRelief;
+  uniform float uDissolve;
+  uniform float uTime;
+  uniform float uHasDepth;
+
   varying vec2 vUv;
+  varying vec3 vNormal;
+  varying vec3 vViewPos;
+  varying float vMask;
+  varying float vDepth;
+
+  // Cheap deterministic hash, used to scatter vertices on the way out.
+  float hash(vec2 p) {
+    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+  }
 
   void main() {
     vUv = uv;
+
+    vec4 d = texture2D(uDepth, uv);
+    // Without the companion map the plane stays flat and fully opaque, so a
+    // missing file degrades to the old billboard instead of vanishing.
+    float depth = mix(0.5, d.r, uHasDepth);
+    float mask = mix(1.0, d.g, uHasDepth);
+
+    vDepth = depth;
+    vMask = mask;
+
     vec3 p = position;
-    // A gentle cylindrical bow: the edges fall away so the slab catches the
-    // rim lights instead of reading as a pasted-on rectangle.
-    float k = abs(uv.x - 0.5) * 2.0;
-    p.z -= k * k * uBow;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+    p.z += (depth - 0.5) * uRelief;
+
+    // Normals by finite difference on the depth map: this is what gives the
+    // form diffuse shading and a rim that moves when the bust turns.
+    float dx = texture2D(uDepth, uv + vec2(uTexel.x, 0.0)).r
+             - texture2D(uDepth, uv - vec2(uTexel.x, 0.0)).r;
+    float dy = texture2D(uDepth, uv + vec2(0.0, uTexel.y)).r
+             - texture2D(uDepth, uv - vec2(0.0, uTexel.y)).r;
+    vec3 n = normalize(vec3(-dx * uRelief * 3.2, -dy * uRelief * 3.2, 1.0));
+    n = mix(vec3(0.0, 0.0, 1.0), n, uHasDepth);
+    vNormal = normalize(normalMatrix * n);
+
+    // Scatter along the normal as the hero hands over to the particle field.
+    if (uDissolve > 0.001) {
+      float r = hash(uv * 91.7);
+      vec3 dir = normalize(n + vec3(r - 0.5, hash(uv * 41.3) - 0.5, 0.25));
+      p += dir * uDissolve * (0.4 + r * 2.6);
+      p.y += uDissolve * uDissolve * 0.6;
+    }
+
+    vec4 mv = modelViewMatrix * vec4(p, 1.0);
+    vViewPos = mv.xyz;
+    gl_Position = projectionMatrix * mv;
   }
 `;
 
 const FRAG = /* glsl */ `
   uniform sampler2D uTex;
+  uniform float uOpacity;
+  uniform float uDissolve;
   uniform float uTime;
-  uniform float uOpacity;
-  uniform float uRadius;
-  uniform float uAspect;
-  uniform vec2 uMouse;
-  uniform vec2 uFocus;
   uniform vec3 uCyber;
   uniform vec3 uViolet;
+  uniform vec3 uKey;
 
   varying vec2 vUv;
-
-  float roundedBox(vec2 p, vec2 b, float r) {
-    vec2 d = abs(p) - b + r;
-    return length(max(d, 0.0)) - r + min(max(d.x, d.y), 0.0);
-  }
+  varying vec3 vNormal;
+  varying vec3 vViewPos;
+  varying float vMask;
+  varying float vDepth;
 
   void main() {
-    // Card space: y spans [-1, 1], x spans [-aspect, aspect].
-    vec2 p = (vUv - 0.5) * vec2(uAspect * 2.0, 2.0);
-    float sdf = roundedBox(p, vec2(uAspect, 1.0) - 0.006, uRadius);
-    float alpha = 1.0 - smoothstep(-0.008, 0.008, sdf);
-    if (alpha < 0.002) discard;
+    // Feather the silhouette: a hard cut reads as a bad cut-out, a soft one
+    // reads as depth of field.
+    float alpha = smoothstep(0.16, 0.62, vMask) * uOpacity;
+    alpha *= 1.0 - smoothstep(0.35, 1.0, uDissolve);
+    if (alpha < 0.008) discard;
 
-    // 2.5D parallax — the subject slides against the room behind it.
-    float depth = 1.0 - smoothstep(0.12, 0.8, distance(vUv, uFocus));
-    vec2 uv = vUv + uMouse * vec2(0.016, 0.012) * (0.22 + depth);
-    vec3 col = texture2D(uTex, uv).rgb;
+    vec3 col = texture2D(uTex, vUv).rgb;
+    float albedo = dot(col, vec3(0.299, 0.587, 0.114));
+    // Every additive term below is scaled by how bright the surface already
+    // is. Without this the coloured kickers overwhelm dark hair and knitwear,
+    // which turns them blue.
+    float lit = 0.18 + 0.82 * albedo;
 
-    // Grade: cool the background down into the palette, keep the subject warm.
+    vec3 n = normalize(vNormal);
+    vec3 viewDir = normalize(-vViewPos);
+
+    // Key light, plus two coloured kickers from the scene palette.
+    float key = clamp(dot(n, normalize(uKey)), 0.0, 1.0);
+    float fillL = clamp(dot(n, normalize(vec3(-1.0, 0.1, 0.5))), 0.0, 1.0);
+    float fillR = clamp(dot(n, normalize(vec3(1.0, -0.2, 0.5))), 0.0, 1.0);
+
+    col *= 0.74 + 0.5 * key;
+    col += uCyber * fillL * 0.16 * lit;
+    col += uViolet * fillR * 0.13 * lit;
+
+    // Fresnel rim — the tell that this is a solid and not a print.
+    float fres = pow(1.0 - clamp(dot(n, viewDir), 0.0, 1.0), 3.2);
+    col += mix(uViolet, uCyber, vUv.y) * fres * (0.3 + 0.7 * lit) * 0.7;
+
+    // Push the recessed parts of the form toward the palette so the bust sits
+    // in the scene rather than on top of it.
     float lum = dot(col, vec3(0.299, 0.587, 0.114));
-    vec3 recede = mix(vec3(lum), uViolet * (0.35 + lum), 0.4) * 0.34;
-    float subjectDist = length((vUv - uFocus) * vec2(1.1, 0.82));
-    float subject = 1.0 - smoothstep(0.22, 0.76, subjectDist);
-    col = mix(recede, col, clamp(subject + 0.18, 0.0, 1.0));
+    vec3 recede = mix(vec3(lum), uViolet * (0.4 + lum), 0.4) * 0.66;
+    col = mix(recede, col, clamp(vDepth * 1.9, 0.0, 1.0));
 
-    // Vignette — soft enough that the shoulders don't crush to black.
-    float v = length((vUv - 0.5) * vec2(1.1, 1.0)) * 1.55;
-    col *= mix(1.0, 0.44, smoothstep(0.5, 1.12, v));
+    // Vertices in flight glow as they join the particle field.
+    col += mix(uCyber, uViolet, vUv.x) * uDissolve * 1.1;
 
-    // Luminous edge, cyan at the top fading to violet at the base.
-    float edge = 1.0 - smoothstep(0.0, 0.022, abs(sdf));
-    col += mix(uViolet, uCyber, vUv.y) * edge * 0.85;
-
-    // Slow specular sweep across the glass.
-    float sweep = 0.5 + 0.5 * sin((vUv.x * 1.4 + vUv.y) * 2.1 - uTime * 0.32);
-    col += vec3(0.05, 0.07, 0.09) * pow(sweep, 7.0);
-
-    gl_FragColor = vec4(col, alpha * uOpacity);
+    gl_FragColor = vec4(col, alpha);
     #include <colorspace_fragment>
-  }
-`;
-
-const GLOW_FRAG = /* glsl */ `
-  uniform float uOpacity;
-  uniform vec3 uCyber;
-  uniform vec3 uViolet;
-  varying vec2 vUv;
-
-  void main() {
-    float d = length(vUv - 0.5) * 2.0;
-    float a = 1.0 - smoothstep(0.15, 1.0, d);
-    vec3 col = mix(uViolet, uCyber, vUv.y);
-    gl_FragColor = vec4(col, a * a * 0.4 * uOpacity);
-    #include <colorspace_fragment>
-  }
-`;
-
-const GLOW_VERT = /* glsl */ `
-  varying vec2 vUv;
-  void main() {
-    vUv = uv;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
   }
 `;
 
 const HEIGHT = 3.8;
 
-export function Portrait({ texture }: { texture: THREE.Texture }) {
+export function Portrait({
+  texture,
+  depth,
+}: {
+  texture: THREE.Texture;
+  depth: THREE.Texture | null;
+}) {
   const group = useRef<THREE.Group>(null);
-  const card = useRef<THREE.Mesh>(null);
-  const cardMat = useRef<THREE.ShaderMaterial>(null);
-  const glowMat = useRef<THREE.ShaderMaterial>(null);
+  const matRef = useRef<THREE.ShaderMaterial>(null);
   const fade = useRef(0);
 
   const image = texture.image as { width?: number; height?: number } | undefined;
   const aspect = image?.width && image?.height ? image.width / image.height : 0.8;
 
-  // R3F clones the `uniforms` prop onto the material, so per-frame writes go
-  // through the material ref — these are initial values only.
+  const segments = scroll.tier === "low" ? 112 : scroll.tier === "mid" ? 176 : 256;
+
+  const geometry = useMemo(
+    () => new THREE.PlaneGeometry(1, 1, segments, Math.round(segments * 1.25)),
+    [segments]
+  );
+  useEffect(() => () => geometry.dispose(), [geometry]);
+
+  // Initial values only — R3F clones this onto the material, so per-frame
+  // writes go through the material ref.
   const uniforms = useMemo(
     () => ({
       uTex: { value: texture },
+      uDepth: { value: depth ?? texture },
+      uHasDepth: { value: depth ? 1 : 0 },
+      uTexel: {
+        value: new THREE.Vector2(
+          1 / ((depth?.image as { width?: number })?.width ?? 512),
+          1 / ((depth?.image as { height?: number })?.height ?? 640)
+        ),
+      },
+      uRelief: { value: 1.15 },
+      uOpacity: { value: 0 },
+      uDissolve: { value: 0 },
       uTime: { value: 0 },
-      uOpacity: { value: 0 },
-      uRadius: { value: 0.13 },
-      uAspect: { value: aspect },
-      uMouse: { value: new THREE.Vector2() },
-      // The face sits high in a portrait crop; parallax and grading key off it.
-      uFocus: { value: new THREE.Vector2(0.5, 0.66) },
       uCyber: { value: new THREE.Color("#4cc9ff") },
       uViolet: { value: new THREE.Color("#a06bff") },
-      uBow: { value: 0.34 },
+      uKey: { value: new THREE.Vector3(0.45, 0.6, 0.9) },
     }),
-    [texture, aspect]
-  );
-
-  const glowUniforms = useMemo(
-    () => ({
-      uOpacity: { value: 0 },
-      uCyber: { value: new THREE.Color("#4cc9ff") },
-      uViolet: { value: new THREE.Color("#a06bff") },
-    }),
-    []
+    [texture, depth]
   );
 
   useFrame((state, dt) => {
@@ -224,13 +293,13 @@ export function Portrait({ texture }: { texture: THREE.Texture }) {
     g.visible = o > 0.004;
     if (!g.visible) return;
 
-    const cu = cardMat.current?.uniforms;
-    if (cu) {
-      cu.uTime.value = t;
-      cu.uOpacity.value = o;
-      (cu.uMouse.value as THREE.Vector2).set(scroll.smoothX, scroll.smoothY);
+    const u = matRef.current?.uniforms;
+    if (u) {
+      u.uTime.value = t;
+      u.uOpacity.value = Math.min(1, o * 1.15);
+      // Scatter once the hero starts handing over, not while it is on screen.
+      u.uDissolve.value = scroll.reducedMotion ? 0 : Math.pow(1 - o, 1.6) * 1.2;
     }
-    if (glowMat.current) glowMat.current.uniforms.uOpacity.value = o;
 
     // Offset right of centre on desktop so the masthead has room.
     const offset = state.size.width >= 1100 ? 1.95 : state.size.width >= 760 ? 1.1 : 0;
@@ -243,36 +312,22 @@ export function Portrait({ texture }: { texture: THREE.Texture }) {
     );
     g.position.z = SCENE_Z.avatar + Math.sin(t * 0.34) * 0.06;
 
-    // Subtle mouse-tracked tilt — the slab turns toward the pointer.
-    g.rotation.y = damp(g.rotation.y, scroll.smoothX * 0.19 + Math.sin(t * 0.24) * 0.015, 4, d);
-    g.rotation.x = damp(g.rotation.x, -scroll.smoothY * 0.12, 4, d);
-    g.rotation.z = damp(g.rotation.z, scroll.smoothX * -0.02, 3, d);
+    // Turning the bust is what reads as solid — the silhouette changes.
+    g.rotation.y = damp(g.rotation.y, scroll.smoothX * 0.26 + Math.sin(t * 0.22) * 0.03, 4, d);
+    g.rotation.x = damp(g.rotation.x, -scroll.smoothY * 0.16, 4, d);
+    g.rotation.z = damp(g.rotation.z, scroll.smoothX * -0.03, 3, d);
   });
 
   return (
     <group ref={group} position={[0, 0.18, SCENE_Z.avatar]}>
-      {/* Bloom bed behind the slab so it reads as lit, not pasted on. */}
-      <mesh position={[0, 0, -0.5]} scale={[HEIGHT * aspect * 2.1, HEIGHT * 1.9, 1]}>
-        <planeGeometry args={[1, 1]} />
+      <mesh geometry={geometry} scale={[HEIGHT * aspect, HEIGHT, 1]} frustumCulled={false}>
         <shaderMaterial
-          ref={glowMat}
-          vertexShader={GLOW_VERT}
-          fragmentShader={GLOW_FRAG}
-          uniforms={glowUniforms}
-          transparent
-          depthWrite={false}
-          blending={THREE.AdditiveBlending}
-        />
-      </mesh>
-
-      <mesh ref={card} scale={[HEIGHT * aspect, HEIGHT, 1]} renderOrder={-1}>
-        <planeGeometry args={[1, 1, 48, 48]} />
-        <shaderMaterial
-          ref={cardMat}
+          ref={matRef}
           vertexShader={VERT}
           fragmentShader={FRAG}
           uniforms={uniforms}
           transparent
+          side={THREE.FrontSide}
         />
       </mesh>
     </group>

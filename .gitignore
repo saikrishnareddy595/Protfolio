@@ -34,3 +34,7 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+# generated previews from scripts/build-portrait-depth.py
+scripts/.preview-depth.png
+__pycache__/

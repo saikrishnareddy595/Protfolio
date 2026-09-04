@@ -107,8 +107,8 @@ function NeuralCore() {
  * the image is still decoding — the intro loader covers that window.
  */
 export function Avatar() {
-  const { texture, state } = usePortraitTexture();
-  if (state === "ready" && texture) return <Portrait texture={texture} />;
+  const { texture, depth, state } = usePortraitTexture();
+  if (state === "ready" && texture) return <Portrait texture={texture} depth={depth} />;
   if (state === "missing") return <NeuralCore />;
   return null;
 }

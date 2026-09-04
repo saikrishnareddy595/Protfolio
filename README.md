@@ -130,7 +130,8 @@ sai-krishna-reddy-portfolio/
 │   │   ├── Shell.tsx                         # Core layout wrapper
 │   │   ├── canvas/                           # 3D WebGL Scene & Shaders
 │   │   │   ├── AgentGraph.tsx                # Spectrum multi-agent topology
-│   │   │   ├── Avatar.tsx                    # 2.5D parallax hero portrait
+│   │   │   ├── Avatar.tsx                    # hero subject: portrait or fallback
+│   │   │   ├── Portrait.tsx                  # depth-displaced 3D bust
 │   │   │   ├── DataTunnel.tsx                # Velocity streaming data tunnel
 │   │   │   ├── Effects.tsx                   # Postprocessing bloom & chromatic grade
 │   │   │   ├── NeuralField.tsx               # Ambient particle field
