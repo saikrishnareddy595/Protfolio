@@ -104,6 +104,26 @@ def fill_holes(arr: np.ndarray, level: float = 0.5) -> np.ndarray:
     return np.clip(arr + holes, 0.0, 1.0)
 
 
+def trim_above_crown(arr: np.ndarray, min_width: int = 60, level: float = 0.5) -> np.ndarray:
+    """
+    Clear anything above the first row that is genuinely the head.
+
+    Vertical seams in the panelling behind the subject are dark enough to trip
+    the darkness cue and touch the hair, so they survive as narrow spurs — the
+    one here was 14px wide against a 13px opening, which erodes 6 per side and
+    leaves 2px to regrow from. Widening the opening far enough to kill it also
+    eats real detail at the ears. In a bust crop nothing legitimate sits above
+    the crown, so the first row wide enough to be a head is the ceiling.
+    """
+    rows = (arr > level).sum(axis=1)
+    wide = np.where(rows >= min_width)[0]
+    if len(wide) == 0:
+        return arr
+    out = arr.copy()
+    out[: wide[0]] = 0.0
+    return out
+
+
 def normalise(arr: np.ndarray, lo_pct: float = 2.0, hi_pct: float = 98.0) -> np.ndarray:
     lo, hi = np.percentile(arr, [lo_pct, hi_pct])
     if hi - lo < 1e-6:
@@ -161,7 +181,16 @@ def main() -> int:
     # Shave the stubs left where furniture grazed the shoulder line; displaced
     # into 3D they stick out of the bust as obvious slabs.
     mask = open_(filled * keep, 13)
+    mask = trim_above_crown(mask)
     mask = fill_holes(mask)
+    # Bridge concave bites in the silhouette. The lit rim of an ear against the
+    # wood behind it measures luminance 0.44 / warmth 0.17 — statistically the
+    # same as the panelling, so no threshold can separate them. Geometry can:
+    # a bite that narrow is closed here, while the genuinely wide concavity
+    # between neck and shoulders is far too broad for this radius to bridge.
+    # Displaced into 3D such a bite is not a soft edge, it is a slice through
+    # the side of the head.
+    mask = close(mask, 35)
     mask = blur(mask, 3.0)
     # A soft shoulder rather than a hard cut: a feathered silhouette reads as
     # intentional in a dark scene, a jagged one reads as a bad cut-out.
