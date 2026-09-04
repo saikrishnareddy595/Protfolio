@@ -53,20 +53,14 @@ export const metadata: Metadata = {
     title: `${profile.fullName} — ${profile.role}`,
     description,
     siteName: profile.fullName,
-    images: [
-      {
-        url: "/avatar.jpg",
-        width: 1844,
-        height: 2304,
-        alt: `${profile.fullName} — ${profile.role}`,
-      },
-    ],
   },
   twitter: {
-    card: "summary_large_image",
+    // No card image: the portrait these pointed at has been removed, and a
+    // tag referencing a missing file is worse than no tag — it renders as a
+    // broken preview wherever the link is shared.
+    card: "summary",
     title: `${profile.fullName} — ${profile.role}`,
     description,
-    images: ["/avatar.jpg"],
   },
   robots: { index: true, follow: true },
 };
